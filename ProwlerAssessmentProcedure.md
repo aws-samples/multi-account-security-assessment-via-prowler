@@ -1,8 +1,4 @@
-## Multi-Account Security Assessment via Prowler with Batching and Post Processing
-
-V3.56 - October 2022  
-Mike Virgilio  
-Sr. Security Consultant SRC-SDT, AWS  
+# Multi-Account Security Assessment via Prowler with Batching and Post Processing
 
 # Table of Contents
 
