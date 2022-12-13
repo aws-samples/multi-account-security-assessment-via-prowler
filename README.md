@@ -25,5 +25,5 @@ Files:
 - prowler-report-template.xlsm:
     An excel document for processing of findings.   Pivot tables allow for search capabilities, charts, and consolidated findings. Note: The excel document version must match with a supported version of prowler.
 
-# Link to APG Artifact
+# Link to APG Artifact (Authorized Access Only)
 https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b
