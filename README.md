@@ -1,4 +1,5 @@
 # Multi-Account Security Assessment via Prowler with Batching and Post Processing
+
 Built to facilitate an AWS security assessment utilizing [Prowler](https://github.com/prowler-cloud/prowler), this solution utilizes bash scripting to provide flexibility for many use cases and AWS environments.
 
 "Prowler is an Open Source security tool to perform AWS security best practices assessments, audits, incident response, continuous monitoring, hardening and forensics readiness. It contains more than 240 controls covering CIS, PCI-DSS, ISO27001, GDPR, HIPAA, FFIEC, SOC2, AWS FTR, ENS and custom security frameworks."
@@ -37,4 +38,5 @@ Files:
     Bash script used for assessing multiple AWS accounts in parallel. This script is automatically deployed onto the EC2 instance in the folder /usr/local/bin/prowler via the prowler-resources.yaml CFT in userdata. By default, this script assumes the IAM role “ProwlerExecRole” in the management account to generate a list of member accounts in the AWS Org. The script then uses this list of accounts to begin an assessment of the accounts. As the accounts are assessed, they will output results in the prowler/outputs directory in CSV and HTML formats.  Once all accounts have been assessed, the individual CSV files will be concatenated, duplicate lines removed, and all output files zipped. Note: This script has tunable variables within the script itself (See appendix for more details). This script is provided independently from the CFT for reference.
 
 # Link to APG Artifact (Authorized Access Only)
+
 https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b
