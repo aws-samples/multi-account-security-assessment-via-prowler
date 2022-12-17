@@ -7,7 +7,7 @@
 #
 # Script version: 2.71
 #
-# .Tunable parameters to review:
+# Tunable parameters to review:
 #   1) PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously.
 #       The instance size must be adjusted appropriately.
 #       Be aware of AWS Account level EC2 API Throttling limits and to execute this script in an account with minimal workloads.
