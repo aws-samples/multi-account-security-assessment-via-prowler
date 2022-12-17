@@ -26,7 +26,7 @@
 #       See Prowler documentation for all options.
 #   7) ACCOUNTID_WITH_NAME: By default, the value is true, the value of ACCOUNT_NUM column in the final report is populated with Account Name 
 #       in the format <AccountId-AccountName>. Changing the value to false will produce the report with ACCOUNT_NUM=<AccountId>. 
-#
+#   8) S3_BUCKET: The S3 bucket which will be used for Prowler report upload
 #########################################
 
 #Variables which can be modified: (In most cases, scanning all accounts and all regions is preferred for a complete assessment)
@@ -57,6 +57,7 @@ IAM_CROSS_ACCOUNT_ROLE="ProwlerExecRole"
 #Specify whether to output Account ID with Account Name in the final report.
 ACCOUNTID_WITH_NAME=true
 
+S3_BUCKET="SetBucketName"
 #########################################
 
 # CleanUp Last Ran Prowler Reports if they exist
@@ -271,5 +272,5 @@ zip prowler_output-$OUTPUT_SUFFIX.zip output/*.csv output/*.txt output/*.html
 echo "Completed."
 echo ""
 
-#Upload Prowler Report to S3 (Update bucketname and uncomment the command to have the zip file automatically copied. Validate IAM permissions)
-#aws s3 cp prowler_output-$OUTPUT_SUFFIX.zip s3://<specify bucket name>
+#Upload Prowler Report to S3
+aws s3 cp prowler_output-$OUTPUT_SUFFIX.zip s3://$S3_BUCKET
