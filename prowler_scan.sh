@@ -1,11 +1,11 @@
-#!/bin/bash -e
+#!/bin/bash
 #
 #
 # Prowler multi-account assessment script:
 #   Used to drive the assessment of AWS accounts via Prowler, post-processing the output reports
 #   and optimizing the effort involved via automation.
 #
-# Script version: 2.85
+# Script version: 2.86
 #
 # Tunable parameters to review:
 #   1) PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously.
