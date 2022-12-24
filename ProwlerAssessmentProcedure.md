@@ -24,44 +24,42 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
 
 ## Implementation Procedure
 
-1. Select an account where the Prowler EC2 instance will be provisioned. Log into this account and deploy the Prowler Resources CloudFormation template. (prowler-resources.yaml)
-    >Note: Use an account such as Security or CommonServices for the Prowler EC2 deploy. When deploying the CFT template, it will provision an IAM Role, S3 Bucket with policy, SNS Topic, and EC2 instance which will be used by Prowler.
-
-    **Deploy the prowler-resources.yaml CFT template:**
-    1. Open the CloudFormation console
-    2. Create Stack -\> With new resources
-    3. Prerequisite - Prepare template: "Template is ready"
-    4. Specify template: "Upload a template file" -\> "Choose File" -\> Browse for the template
-        1. Specify the prowler-resources.yaml template
-    5. Next
-    6. Specify stack details
-        1. StackSet name: Prowler-Resources
-        2. Parameters:
-            1. VPCId: Select a VPC in the account
-            2. SubnetId: Select a private subnet which has Internet access
-            Note: If a public subnet is selected, the EC2 instance will not provision as the CFT doesn't attach an EIP by default
-            3. InstanceType: Select an instance size based on the number of parallel assessments. Guidelines: 4=c6i.large, 6=c6i.xlarge, 8=c6i.2xlarge
-            4. InstanceImageId: Leave the default for Amazon Linux 2
-            5. KeyPairName: Specify the name of an existing KeyPair if using SSH for access (This is optional and can be left blank)
-            6. PermittedSSHInbound: If using SSH for access, specify a permitted CIDR
-            7. BucketName: Leave the default unless necessary
-            8. EmailAddress: Specify an email address for a SNS notification when Prowler completes the assessment and uploads the zip file to S3.
+1. Deploy the EC2 instance and supporting resources (prowler-resources.yaml)  
+    >Note: When deploying the CFT template, it will provision an IAM Role, S3 Bucket with policy, SNS Topic, and EC2 instance which will be used by Prowler.
+    1. Select an account where the Prowler EC2 instance will be provisioned (Security tooling focused AWS account recommended)
+    2. Open the CloudFormation console
+    3. Create Stack -\> With new resources
+    4. Prerequisite - Prepare template: "Template is ready"
+    5. Specify template: "Upload a template file" -\> "Choose File" -\> Browse for the template
+        - Specify the prowler-resources.yaml template
+    6. Next
+    7. Specify stack details
+        - StackSet name: Prowler-Resources
+        - Parameters:
+            - VPCId: Select a VPC in the account
+            - SubnetId: Select a private subnet which has Internet access
+                >Note: If a public subnet is selected, the EC2 instance will not provision as the CFT doesn't attach an EIP by default
+            - InstanceType: Select an instance size based on the number of parallel assessments. Guidelines: 4=c6i.large, 6=c6i.xlarge, 8=c6i.2xlarge
+            - InstanceImageId: Leave the default for Amazon Linux 2
+            - KeyPairName: Specify the name of an existing KeyPair if using SSH for access (This is optional and can be left blank)
+            - PermittedSSHInbound: If using SSH for access, specify a permitted CIDR
+            - BucketName: Leave the default unless necessary
+            - EmailAddress: Specify an email address for a SNS notification when Prowler completes the assessment and uploads the zip file to S3.
                 >Note: The SNS subscription configuration must be confirmed prior to Prowler completing the assessment or a notification will not be sent.
-            9. IAMProwlerEC2Role: Leave the default unless necessary
-            10. IAMPRowlerExecRole: Leave the default unless necessary
-            11. Parallelism: Specify the number of parallel assessments to perform.
+            - IAMProwlerEC2Role: Leave the default unless necessary
+            - IAMPRowlerExecRole: Leave the default unless necessary
+            - Parallelism: Specify the number of parallel assessments to perform.
                 >Note: Specify the proper InstanceType parameter value
-            12. Next
-            13. Next
-            14. Review the summary
-            15. Check the box for "The following resource(s) require capabilities: [AWS::IAM::Role]" and Create Stack
-            16. Once the Stack has finished deploying, click the Outputs tab in the CloudFormation console and copy the ProwlerEC2Role ARN for use with the next CloudFormation template deploys.
+    8. Next
+    9. Next
+    10. Review the summary
+    11. Check the box for "The following resource(s) require capabilities: [AWS::IAM::Role]" and Create Stack
+    12. Once the Stack has finished deploying, click the Outputs tab in the CloudFormation console and copy the ProwlerEC2Role ARN for use with the next CloudFormation template deploys.
 
-2. Log into the AWS Org management account (root) in order to deploy a CloudFormation StackSet across the AWS Organization and a Stack to the management account.  
+2. Deploy the IAM cross account role to all AWS organization member accounts IAM-ProwlerExecRole.yaml)  
     >Note: The easiest way to do this is to utilize service-managed permissions when deploying the stack and deploying to the entire organization.
     > > This will require trust to be established between CloudFormation and the AWS Organization. If it is not already established, the CloudFormation console for StackSets will present a button which should be clicked and states "Enable trusted access with AWS Organizations to use service-managed permissions." This can be safely enabled (with the appropriate approval) without impacting existing stacks and can also be disabled at a later time via command line.
 
-    **Deploy the IAM-ProwlerExecRole.yaml CFT template to all accounts in the Organization via a StackSet:**
     1. Open the CloudFormation console
     2. Click StackSets
     3. Click "Create StackSet"
@@ -84,7 +82,7 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
     15. Submit
         >Monitor the "Stack instances" (Individual account status) and Operations (Overall) tabs to determine when the deploy is completed.
 
-    **Deploy the IAM-ProwlerExecRole.yaml CFT template to the AWS Org management account (root) via a stack:**
+3. Deploy the IAM cross account role to the AWS organization management account (IAM-ProwlerExecRole.yaml)
     >Note: This deployment is direct to the management account as the StackSet deployed previously does not include the management account.
     1. Open the CloudFormation console
     2. Create Stack -\> With new resources
@@ -102,11 +100,11 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
     9. Review the summary
     10. Check the box for "The following resource(s) require capabilities: [AWS::IAM::Role]" and Create Stack
 
-3. Log into the AWS account where the Prowler Resources stack was deployed using SSM Connect and access the ProwlerEC2 Instance.
+4. Log into the AWS account where the Prowler Resources stack was deployed using SSM Connect and access the ProwlerEC2 Instance.
     >Note: SSM Access is granted as part of the IAM Role which is provisioned and attached to the EC2 instance. If unable to connect, validate the subnet has Internet access and reboot the instance as the agent needs to communicate with the AWS SSM endpoint.  
 ![InstanceConnect](docs/images/InstanceConnect.png)
 
-4. Execute the prowler scan script to begin the assessment
+5. Execute the prowler scan script to begin the assessment
     >Note: Screen will be used to allow the prowler script to continue executing if console access is lost.  Wait for the Prowler assessment to complete before continuing with Output handling
     1. sudo -i
     2. screen
