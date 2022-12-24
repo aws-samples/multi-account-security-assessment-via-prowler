@@ -5,7 +5,7 @@
 1. [Overview](#overview)
 2. [Related Resources](#related-resources)
 3. [Implementation Procedure](implementation-procedure)
-4. [Finding Processing](#finding-processing)
+4. [Output Handling](#output-handling)
 5. [Appendix](#appendix)
 
 ## Overview
@@ -124,7 +124,9 @@ instance and variables adjusted to tune the scan for specific use cases. Instruc
 - If you would like to monitor status of the individual prowler scans,
   - tail -f output/stdout-\<accountnumber\> in the prowler directory.
 
-## Finding Processing
+## Output Handling
+
+>Note: The Prowler assessment must already be completed before continuing with this section.  The zip file will be present in the S3 bucket, and if SNS configured, an email delivered.
 
 1. Download prowler_output-\<assessdate\>.zip from the S3 bucket, validate it opens, and then delete the S3 object from the bucket.
     >Note: Having an empty bucket is required for resource removal when the Stack is deleted.
