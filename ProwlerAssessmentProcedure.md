@@ -4,7 +4,7 @@
 
 1. [Overview](#overview)
 2. [Related Resources](#related-resources)
-3. [Implementation Procedure](implementation-procedure)
+3. [Implementation Procedure](#implementation-procedure)
 4. [Output Handling](#output-handling)
 5. [Appendix](#appendix)
 
