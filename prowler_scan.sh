@@ -5,7 +5,7 @@
 #   Used to drive the assessment of AWS accounts via Prowler, post-processing the output reports
 #   and optimizing the effort involved via automation.
 #
-# Script version: 2.86
+# Script version: 2.87
 #
 # Tunable parameters to review:
 #   1) PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously.
@@ -21,12 +21,13 @@
 #   4) REGION_LIST: Specify regions (SPACE DELIMITED) if you wish to assess specific AWS regions
 #       or leave allregions to include all AWS regions.
 #   5) IAM_CROSS_ACCOUNT_ROLE: The IAM Role name created for cross account access
-#   6) The prowler command within the for loop can be tuned to meet the needs of the assessment.
-#       "./prowler -R ProwlerExecRole -A ""  -M csv,html -T 43200 > output/stdout-.txt 2>&1"
-#       See Prowler documentation for all options.
-#   7) ACCOUNTID_WITH_NAME: By default, the value is true, the value of ACCOUNT_NUM column in the final report is populated with Account Name 
+#   6) ACCOUNTID_WITH_NAME: By default, the value is true, the value of ACCOUNT_NUM column in the final report is populated with Account Name 
 #       in the format <AccountId-AccountName>. Changing the value to false will produce the report with ACCOUNT_NUM=<AccountId>. 
-#   8) S3_BUCKET: The S3 bucket which will be used for Prowler report upload
+#   7) S3_BUCKET: The S3 bucket which will be used for Prowler report upload.
+#       This is set by default to the S3 bucket provisioned during deployment.
+#   8) The prowler command within the for loop can be tuned to meet the needs of the assessment.
+#       "./prowler -R ProwlerExecRole -A ""  -M csv,html -T 43200 > output/stdout-$ACCOUNTID.txt 2>&1"
+#       See Prowler documentation for all options.
 #########################################
 
 #Variables which can be modified: (In most cases, scanning all accounts and all regions is preferred for a complete assessment)
