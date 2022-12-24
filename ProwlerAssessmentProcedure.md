@@ -58,7 +58,7 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
             16. Once the Stack has finished deploying, click the Outputs tab in the CloudFormation console and copy the ProwlerEC2Role ARN for use with the next CloudFormation template deploys.
 
 2. Log into the AWS Org management account (root) in order to deploy a CloudFormation StackSet across the AWS Organization and a Stack to the management account.  
-    >Note: The easiest way to do this is to utilize service-managed permissions when deploying the stack and deploying to the entire organization. 
+    >Note: The easiest way to do this is to utilize service-managed permissions when deploying the stack and deploying to the entire organization.
     > > This will require trust to be established between CloudFormation and the AWS Organization. If it is not already established, the CloudFormation console for StackSets will present a button which should be clicked and states "Enable trusted access with AWS Organizations to use service-managed permissions." This can be safely enabled (with the appropriate approval) without impacting existing stacks and can also be disabled at a later time via command line.
 
     **Deploy the IAM-ProwlerExecRole.yaml CFT template to all accounts in the Organization via a StackSet:**
