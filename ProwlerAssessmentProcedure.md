@@ -102,7 +102,8 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
 
 4. Log into the AWS account where the Prowler Resources stack was deployed using SSM Connect and access the ProwlerEC2 Instance.
     >Note: SSM Access is granted as part of the IAM Role which is provisioned and attached to the EC2 instance. If unable to connect, validate the subnet has Internet access and reboot the instance as the agent needs to communicate with the AWS SSM endpoint.  
-![InstanceConnect](docs/images/InstanceConnect.png)
+
+    ![InstanceConnect](docs/images/InstanceConnect.png)
 
 5. Execute the prowler scan script to begin the assessment
     >Note: Screen will be used to allow the prowler script to continue executing if console access is lost.  Wait for the Prowler assessment to complete before continuing with Output handling
