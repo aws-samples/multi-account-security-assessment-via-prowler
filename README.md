@@ -23,7 +23,7 @@ Related Resources:
 - ProwlerAssessmentProcedure.md:  
     Step by step instructions for provisioning IAM Roles, Prowler Resources, and processing findings.
 
-- Prowler-resources.yaml: 
+- Prowler-resources.yaml:  
     A CFT which is deployed in the account where the prowler EC2 instance will be deployed.  This template will deploy all necessary dependencies in order for prowler to perform assessments across all accounts. The IAM-ProwlerExecRole is dependent on this template being deployed first.  
     >Note: If this stack is deleted and redeployed, the ProwlerExecRole StackSet will need to be re-deployed to rebuild the cross-account dependency between IAM Roles.
 
@@ -31,18 +31,18 @@ Related Resources:
     A CFT to be deployed via StackSet across all member accounts (including the AWS Org Root/Management account). This will create an IAM Role which can be assumed by prowler during scanning.
 
 - prowler-report-template.xlsm:
-    An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings. 
+    An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings.
     >Note: The excel document version must match with a supported version of prowler.
 
-- prowler_scan.sh: 
+- prowler_scan.sh:  
     Bash script used for assessing multiple AWS accounts in parallel. This script is automatically deployed onto the EC2 instance in the folder /usr/local/bin/prowler via the prowler-resources.yaml CFT in userdata. By default, this script assumes the IAM role “ProwlerExecRole” in the management account to generate a list of member accounts in the AWS Org. The script then uses this list of accounts to begin an assessment of the accounts. As the accounts are assessed, they will output results in the prowler/outputs directory in CSV and HTML formats.  Once all accounts have been assessed, the individual CSV files will be concatenated, duplicate lines removed, and all output files zipped. Note: This script has tunable variables within the script itself (See appendix for more details). This script is provided independently from the CFT for reference.
 
-**References**
+## References
 
 Prowler Source: [https://github.com/prowler-cloud/prowler](https://github.com/prowler-cloud/prowler)
 
 CIS Benchmarks: [https://d0.awsstatic.com/whitepapers/compliance/AWS\_CIS\_Foundations\_Benchmark.pdf](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf)
 
-# Link to APG Artifact (Authorized Access Only)
+## Link to APG Artifact (Authorized Access Only)
 
-https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b
+[APG Pattern](https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b)
