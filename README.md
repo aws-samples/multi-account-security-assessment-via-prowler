@@ -27,10 +27,10 @@ Related Resources:
     A CFT which is deployed in the account where the prowler EC2 instance will be deployed.  This template will deploy all necessary dependencies in order for prowler to perform assessments across all accounts. The IAM-ProwlerExecRole is dependent on this template being deployed first.  
     >Note: If this stack is deleted and redeployed, the ProwlerExecRole StackSet will need to be re-deployed to rebuild the cross-account dependency between IAM Roles.
 
-- IAM-ProwlerExecRole.yaml:
+- IAM-ProwlerExecRole.yaml:  
     A CFT to be deployed via StackSet across all member accounts (including the AWS Org Root/Management account). This will create an IAM Role which can be assumed by prowler during scanning.
 
-- prowler-report-template.xlsm:
+- prowler-report-template.xlsm:  
     An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings.
     >Note: The excel document version must match with a supported version of prowler.
 
