@@ -43,6 +43,6 @@ Prowler Source: [https://github.com/prowler-cloud/prowler](https://github.com/pr
 
 CIS Benchmarks: [https://d0.awsstatic.com/whitepapers/compliance/AWS\_CIS\_Foundations\_Benchmark.pdf](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf)
 
-## Link to APG Artifact (Authorized Access Only)
+## Link to APG Pattern (Authorized Access Only)
 
-[APG Pattern](https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b)
+[https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b](https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b)
