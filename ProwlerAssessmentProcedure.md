@@ -200,32 +200,47 @@ The findings, severity, and customer review sheets provide details for analysis.
 
 4. If the results contain "Access Denied" errors, you will want to remove them from the findings before processing. The errors are typically due to external influencing permissions which blocked Prowler from assessing a particular resource. For example, some checks fail when reviewing Control Tower buckets "Access Denied getting bucket location for aws-controltower-logs-XXXXXXXXXXXX." These error messages should be removed from the consolidated output CSV file and then copied into the excel sheet.  
 
-    How to filter results and create a new file which EXCLUDES the row containing the pattern:
-    > Note: Watch for ' when used at CLI. Copy and paste may use the wrong quote.
-    Output lines which do NOT contain "Access Denied":
+    How to filter results by removing rows which contain a pattern and outputting the results to a new file:
 
     - Linux/Mac:  
-    grep -v -i "Access Denied getting bucket" myoutput.csv \> myoutput_modified.csv
+
+        ```bash
+        grep -v -i "Access Denied getting bucket" myoutput.csv > myoutput_modified.csv
+        ```
 
     - Windows: (PowerShell)  
-    Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket' -NotMatch \> myoutput_modified.csv
-    >Note: Multiple patterns can be matched and processed at the same time.
+
+        ```powershell
+        Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket' -NotMatch > myoutput_modified.csv
+        ```
+
+    **Multiple patterns can be matched and processed at the same time:**  
 
     - Linux/Mac: (Grep uses an escaped pipe)  
-    grep -v -i 'Access Denied getting bucket\|Access Denied Trying to Get' myoutput.csv \> myoutput_modified.csv
 
-    - Windows: (Select-String uses a comma)  
-    Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket', 'Access Denied Trying to Get' -NotMatch \> myoutput_modified.csv
+        ```bash
+        grep -v -i 'Access Denied getting bucket\|Access Denied Trying to Get' myoutput.csv > myoutput_modified.csv
+        ```
+
+    - Windows: (PowerShell: Select-String uses a comma)  
+
+        ```powershell
+        Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket', 'Access Denied Trying to Get' -NotMatch > myoutput_modified.csv
+        ```
 
 5. Single Threaded multi-account scanning:
     >Gather a list of all accounts in the AWS Org and execute Prowler in a loop for all accounts stored in env variable ACCOUNTS_IN_ORGS  
     Note: "aws organizations list-accounts" can only be run in the management account or an AWS account which has been delegated admin (CloudFormation StackSet/IAM Access Analyzer/etc)  
 
+    ```bash
     ACCOUNTS_IN_ORGS=$(aws organizations list-accounts --output text --query 'Accounts[?Status==`ACTIVE`].Id')  
     for accountId in $ACCOUNTS_IN_ORGS; do ./prowler -A $accountId -R ProwlerExecRole -M csv,html -n -T 43200 \> stdout-$accountId 2\>&1; done  
+    ```
 
 6. Single threaded scanning on specific accounts:
     >Specify specific accounts to scan: (Manually specify AWS Account ID separated by whitespace) and then execute Prowler in a loop for accounts specified in the ACCOUNTS_TO_SCAN variable
 
+    ```bash
     ACCOUNTS_TO_SCAN="111111111111 22222222222 33333333333"  
     for accountId in $ACCOUNTS_TO_SCAN; do ./prowler -A $accountId -R ProwlerExecRole -M csv,html -n -T 43200 \> stdout-$accountId 2\>&1; done
+    ```
