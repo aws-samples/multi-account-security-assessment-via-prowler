@@ -107,10 +107,13 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
 
 5. Execute the prowler scan script to begin the assessment
     >Note: Screen will be used to allow the prowler script to continue executing if console access is lost.  Wait for the Prowler assessment to complete before continuing with Output handling
-    1. sudo -i
-    2. screen
-    3. cd /usr/local/bin/prowler
-    4. ./prowler_scan.sh
+
+    ```bash
+    sudo -i
+    screen
+    cd /usr/local/bin/prowler
+    ./prowler_scan.sh
+    ```
 
 >Notes:
 
