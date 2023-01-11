@@ -63,16 +63,16 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
     1. Open the CloudFormation console
     2. Click StackSets
     3. Click "Create StackSet"
-    4. Prerequisite - Prepare template: "Template is ready"
-    5. Specify template: "Upload a template file" -\> "Choose File" -\> Browse for the template.
+    4. Permissions: Service-managed permissions
+    5. Prerequisite - Prepare template: "Template is ready"
+    6. Specify template: "Upload a template file" -\> "Choose File" -\> Browse for the template.
         - Specify the IAM-ProwlerExecRole.yaml template.
-    6. Next
-    7. Specify StackSet details
+    7. Next
+    8. Specify StackSet details
         - StackSet name: IAM-ProwlerExecRole
         - Parameters:
           - AuthorizedARN: Specify the ProwlerEC2Role ARN which was provisioned as part of the prowler-resources.yaml stack.
-          - ProwlerRoleName: Leave the default (ProwlerExecRole)
-    8. Permissions: Service-managed permissions
+          - ProwlerRoleName: Leave the default (ProwlerExecRole) 
     9. Deployment targets: Leave "Deploy to organization" selected along with defaults
     10. Specify regions: Select a single region as IAM is global. (E.g., Use the region the Prowler EC2 Instance will be deployed in)
     11. OPTIONAL: Specify Deployment Options: Set BOTH "Maximum concurrent accounts" and "Failure tolerance" to a high number (E.g. 100) to have the stacks deploy to this number of AWS accounts simultaneously.
