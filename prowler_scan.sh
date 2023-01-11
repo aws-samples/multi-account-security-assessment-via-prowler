@@ -255,7 +255,14 @@ else
 
     # Move the final line in the file (Header) to the top for easier location in Excel
     awk '{a[NR]=$0} END {print a[NR]; for (i=1;i<NR;i++) print a[i]}' output/prowler-fullorgresults-raw.csv > output/PROCESS.csv
-    awk -F';' '{$6=$5;}1' OFS=';' output/PROCESS.csv > $CONSOLIDATED_REPORT
+    acctNameCol=$(awk -F';' -vCOLM=ACCOUNT_NAME 'NR == 1 { for (i = 1; i <= NF; i++) { if ($i == COLM) { cidx = i; } } if (cidx <=0) { print -1; } else { print cidx; } fi; exit}'  output/PROCESS.csv)
+    acctIdCol=$(awk -F';' -vCOLM=ACCOUNT_ID 'NR == 1 { for (i = 1; i <= NF; i++) { if ($i == COLM) { cidx = i; } } if (cidx <=0) { print -1; } else { print cidx; } fi; exit}'  output/PROCESS.csv)
+    if [ $acctNameCol -gt 0 ]; then
+        awk -vFPAT='([^;]*)|("[^"]+")' "NR > 1 {$"$acctNameCol"=$"$acctIdCol";}1" OFS=';' output/PROCESS.csv > $CONSOLIDATED_REPORT
+    else 
+        echo "Skipped Account Name replacement for the file $CONSOLIDATED_REPORT, Reason: ACCOUNT_NAME column not found!"    
+        cat output/PROCESS.csv > $CONSOLIDATED_REPORT
+    fi     
     rm -f output/PROCESS.csv
 
     # Remove the initial concatenated raw file
