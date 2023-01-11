@@ -26,7 +26,7 @@
 #   7) S3_BUCKET: The S3 bucket which will be used for Prowler report upload.
 #       This is set by default to the S3 bucket provisioned during deployment.
 #   8) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
-#       "pipenv run python3 -m prowler -R arn:aws:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose > output/stdout-$ACCOUNTID.txt 2>&1"
+#       "pipenv run python3 -m prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose > output/stdout-$ACCOUNTID.txt 2>&1"
 #       See Prowler documentation for all options.
 #########################################
 
