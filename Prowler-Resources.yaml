@@ -1,8 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-  Deploys an EC2 Instance, S3 bucket, and IAM Cross-Account trusted Role for use with Prowler. 
-  Userdata has a bash script embedded which will be used for multi-account scanning. 
-  Note that $ and ` in Userdata are escaped with \ if they are not supposed to be interpreted by CloudFormation
+  Deploys an EC2 Instance (Configured via UserData), S3 bucket, IAM Role, and SNS Topic for use with Prowler. 
 
 Metadata:
   AWS::CloudFormation::Interface:
