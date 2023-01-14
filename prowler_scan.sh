@@ -18,6 +18,8 @@
 #       Use the keyword inputfile to read in AWS Account IDs from a file (If using this mode, must also set AWSACCOUNT_LIST_FILE)
 #       Use a space separated list of AWS Account IDs
 #   3) AWSACCOUNT_LIST_FILE: If using AWSACCOUNT_LIST="inputfile", specify the path to the file
+#       If the file is located in the /use/local/prowler directory, specify the filename, else specify the full path
+#       Account IDs can be specified on one line (space separated) or one Account ID per line
 #   4) REGION_LIST: Specify regions (SPACE DELIMITED) if you wish to assess specific AWS regions
 #       or leave allregions to include all AWS regions.
 #   5) IAM_CROSS_ACCOUNT_ROLE: The IAM Role name created for cross account access
@@ -25,7 +27,10 @@
 #       in the format <AccountId-AccountName>. Changing the value to false will produce the report with ACCOUNT_NUM=<AccountId>.
 #   7) S3_BUCKET: The S3 bucket which will be used for Prowler report upload.
 #       This is set by default to the S3 bucket provisioned during deployment.
-#   8) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
+#   8) CONSOLIDATED_REPORT: The name of the output report which does not have any grep filtering performed
+#   9) CONSOLIDATED_REPORT_FILTERED: The name of the output report which does have grep filtering performed to remove common errors.
+#       This file is recommended to be used for reporting as know errors are removed and provide cleaner output
+#   10) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
 #       "pipenv run python3 -m prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose > output/stdout-$ACCOUNTID.txt 2>&1"
 #       See Prowler documentation for all options.
 #########################################
@@ -36,16 +41,11 @@
 PARALLELISM="10"
 
 #Specify accounts to be assessed using one of the supported methods:
-#  Use the keyword allaccounts to generate a list of all accounts in the AWS Org
-#  Use the keyword inputfile to read in AWS Account IDs from a file
-#  Use a space separated list of AWS Account IDs
 AWSACCOUNT_LIST="allaccounts"
 #AWSACCOUNT_LIST="inputfile"
 #AWSACCOUNT_LIST="123456789012 210987654321"
 
 #If using AWSACCOUNT_LIST="inputfile", specify the path to the file:
-#  If the file is located in the /use/local/bin/prowler directory, specify the filename, else specify the full path
-#  Account IDs can be specified on one line (space separated) or one Account ID per line
 #AWSACCOUNT_LIST_FILE="file_with_account_ids
 
 #Specify the regions to have assessed (space separated) or use the keyword allregions to include all regions:
@@ -58,7 +58,15 @@ IAM_CROSS_ACCOUNT_ROLE="ProwlerExecRole"
 #Specify whether to output Account ID with Account Name in the final report. (set to false to disable)
 ACCOUNTID_WITH_NAME=true
 
+#S3 bucket where report will be uploaded
 S3_BUCKET="SetBucketName"
+
+#Consolidated output report without error filtering
+CONSOLIDATED_REPORT=output/prowler-fullorgresults.csv
+
+#Consolidated output report with error filtering (Recommended to be used for reporting)
+CONSOLIDATED_REPORT_FILTERED=output/prowler-fullorgresults-accessdeniedfiltered.csv
+
 #########################################
 
 # CleanUp Last Ran Prowler Reports if they exist
@@ -212,14 +220,13 @@ if $ACCOUNTID_WITH_NAME; then
     echo ""
 fi
 
-CONSOLIDATED_REPORT=output/prowler-fullorgresults.csv
 if $ACCOUNTID_WITH_NAME; then
     # Concatenating all output csv files into a single file for use with Excel and replace account_num with <AccountId-AccountName>
     echo "Concatenating all output csv files into a single file for use with Excel and replacing account_num with <AccountId-AccountName>..."
     counter=1
     rm -f output/prowler-fullorgresults-temp.csv
     for fileName in output/prowler-*.csv ; do
-        if [[ "$fileName" != "output/prowler-fullorgresults.csv" && "$fileName" != "output/prowler-fullorgresults-accessdeniedfiltered.csv" && "$fileName" != "output/prowler-fullorgresults-with-acct-name.csv" && "$fileName" != "output/prowler-fullorgresults-raw.csv" ]]; then
+        if [[ "$fileName" != "output/prowler-fullorgresults.csv" && "$fileName" != $CONSOLIDATED_REPORT_FILTERED && "$fileName" != "output/prowler-fullorgresults-with-acct-name.csv" && "$fileName" != "output/prowler-fullorgresults-raw.csv" ]]; then
             echo "Processing the file $fileName to replace AccountId with Name."
             acctId=$(echo "$fileName" | cut -d '-' -f3)
             acctName=$(awk -v var=$acctId '$1 == var {print $5}' FS=, output/accts.txt)
@@ -276,7 +283,7 @@ fi # end of if ACCOUNTID_WITH_NAME is true.
 
 #Perform processing to remove common "Access Denied" errors from output while preserving the "full" output
 echo "Creating an optional filtered version of the concatenate output for use with Excel..."
-grep -v -i 'Access Denied getting bucket\|Access Denied Trying to Get\|InvalidToken' $CONSOLIDATED_REPORT > output/prowler-fullorgresults-accessdeniedfiltered.csv
+grep -v -i 'Access Denied getting bucket\|Access Denied Trying to Get\|InvalidToken' $CONSOLIDATED_REPORT > $CONSOLIDATED_REPORT_FILTERED
 echo "Completed."
 echo ""
 
