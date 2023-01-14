@@ -138,39 +138,49 @@ instance and variables adjusted to tune the scan for specific use cases. Instruc
 3. Expand the zip file containing all of the output.
     >Note: The stdout-\<accountid\> files included in the zip can be used for prowler execution review or troubleshooting, but will be not be processed for a report.
 
-4. Open the "prowler-report-template.xlsm" excel document and select the "Prowler CSV" sheet. Delete all sample data except for Row 1 which is the header.
+4. Prepare the PivotTable Excel Template for environment data  
+    Open the "prowler-report-template.xlsm" excel document and select the "Prowler CSV" sheet  
+    Delete all sample data except for Row 1 which is the header
+    >Note: If asked whether to delete the query associated with the data being removed, click no to prevent problems with the PivotTable.
 
-5. Open the "prowler-fullorgresults.csv" (or alternatively prowler-fullorgresults-accessdeniedfiltered.csv ) file with excel and remove the header row which should be the very first row of data.
-    >Note: The prowler-fullorgresults-accessdeniedfiltered.csv is a filtered version of the output file which has been generated as part of the prowler_scan.sh file to remove common errors related to attempted scans on Control Tower resources.
+5. Open the output data from the Prowler assessment  
+    Open the "prowler-fullorgresults-accessdeniedfiltered.txt" (or alternatively prowler-fullorgresults.txt) file with excel  
+    Instruct Excel to convert the data into columns by delimiting with the semicolon.  
+        Select Column A, Click the Excel "Data" menu item, Click "Text to Columns", Select "Delimited", Next, Select "Semicolon", click "Finish"
+    Delete the header row which should be the very first row of data.
+    >Note: The prowler-fullorgresults-accessdeniedfiltered.txt is a filtered version of the output file which has been generated as part of the prowler_scan.sh file to remove common errors related to attempted scans on Control Tower resources.
 
     The sorting process within the prowler_scan.sh file should consolidate all headers into a single entry and then move it to the very top of the file. If it is not at the top, check the last very bottom.  
 
     Delete the Header row as it is already present in the "prowler-report-template.xlsm" excel document  
 
     e.g.  
-    PROFILE,ACCOUNT_NUM,REGION,TITLE_ID,CHECK_RESULT,ITEM_SCORED,ITEM_LEVEL,TITLE_TEXT,CHECK_RESULT_EXTENDED,CHECK_ASFF_COMPLIANCE_TYPE,CHECK_SEVERITY,CHECK_SERVICENAME,CHECK_ASFF_RESOURCE_TYPE,CHECK_ASFF_TYPE,CHECK_RISK,CHECK_REMEDIATION,CHECK_DOC,CHECK_CAF_EPIC,CHECK_RESOURCE_ID,PROWLER_START_TIME,ACCOUNT_DETAILS_EMAIL,ACCOUNT_DETAILS_NAME,ACCOUNT_DETAILS_ARN,ACCOUNT_DETAILS_ORG,ACCOUNT_DETAILS_TAGS  
+    ASSESSMENT_START_TIME   FINDING_UNIQUE_ID   PROVIDER    CHECK_ID    CHECK_TITLE CHECK_TYPE  STATUS  STATUS_EXTENDED SERVICE_NAME  
+    SUBSERVICE_NAME SEVERITY    RESOURCE_TYPE   RESOURCE_DETAILS    RESOURCE_TAGS   DESCRIPTION RISK    RELATED_URL REMEDIATION_RECOMMENDATION_TEXT  
+    REMEDIATION_RECOMMENDATION_URL  REMEDIATION_RECOMMENDATION_CODE_NATIVEIAC   REMEDIATION_RECOMMENDATION_CODE_TERRAFORM   REMEDIATION_RECOMMENDATION_CODE_CLI REMEDIATION_RECOMMENDATION_CODE_OTHER   CATEGORIES  DEPENDS_ON  RELATED_TO  NOTES   PROFILE ACCOUNT_ID  ACCOUNT_NAME    ACCOUNT_EMAIL   ACCOUNT_ARN ACCOUNT_ORG ACCOUNT_TAGS    REGION  RESOURCE_ID RESOURCE_ARN  
 
 6. Select all data from the Prowler generated output file and paste into the prowler-report-template file.  
-    - Manually select all data from columns B through Y and copy to clipboard (control-c)
-    - Switch to the "prowler-report-template.xlsm", go to the "Prowler CSV" sheet, click on Cell B2 and Control-v to paste all of the data into this document.
+    - Manually select all data from columns A through AK and copy to clipboard
+    - Switch to the "prowler-report-template.xlsm", go to the "Prowler CSV" sheet, click on Cell A2 and to paste all of the data into this document.
 
     >Notes:
     >
     > > - Control-A doesn't work because we need to paste into row 2 and preserve the header in row 1.
     > > - There may be "Access Denied" errors which may their way into the output, these should be deleted from the data before copying into the template so they don't appear in the findings. A couple options are specified in the Appendix of this document for removing Access Denied errors via command line.
     > > - It is recommended to use the prowler-fullorgresults-accessdeniedfiltered.csv file which has already been processed to remove the most common errors.
-    > > - The PROFILE, ACCOUNT_DETAILS_EMAIL, ACCOUNT_DETAILS_NAME, ACCOUNT_DETAILS_ARN, ACCOUNT_DETAILS_ORG, ACCOUNT_DETAILS_TAGS columns may be empty.
+    > > - Some columns may be empty in the output.
 
 7. Validate that the document contains the customer's data and looks similar to the image below.  
 ![CustSanitizedData](docs/images/CustSanitizedData.png)
 
-8. Change the format of the obfuscated ACCOUNT_NUM column  
-Excel doesn't properly display 12-digit AWS account numbers and formats it as an exponential number by default. It is recommended to change the formatting of the column to be number with 0 decimal places. Right click on column B and select "Format Cells…" This will be present in the findings as well and the same formatting change will be needed correct this.  
-![FormatAdjust](docs/images/FormatAdjust.png)
-
-9. Refresh Findings and graph pivot tables  
-Select the "Findings" sheet at the bottom of the excel doc, click on A17 (Header of the pivot table) to select the PivotTable header, click "PivotTable Analyze" at the top toolbar, then click the dropdown next to Refresh, and click Refresh All. This will incorporate all new CSV output into the tables.  
+8. Refresh Findings and graph pivot tables  
+Select the "Findings" sheet at the bottom of the excel doc, click on A17 (Header of the pivot table) to select the PivotTable header, click "PivotTable Analyze" at the top toolbar, then click the dropdown next to Refresh, and click Refresh All. This will incorporate all new CSV output into the tables and tabs.  
 ![PivotRefresh](docs/images/PivotRefresh.png)
+
+9. Change the format of the AWS Account numbers to number so they are shown properly  
+Excel doesn't properly display 12-digit AWS account numbers and formats it as an exponential number by default. It is recommended to change the formatting of the column to be number with 0 decimal places. Right click on column A and select "Format Cells…" This will be present in the findings as well and the same formatting change will be needed correct this.  
+![FormatAdjust](docs/images/FormatAdjust.png)
+>Note: Excel will remove starting zeros from AWS Account IDs by default.  If an AWS account ID is LESS THAN 12 characters, it begins with 0
 
 10. Review findings and provide to customer.  
 The findings, severity, and customer review sheets provide details for analysis. If the excel is provided to the customer, delete as many tabs as possible to reduce complexity (Prowler CSV tab MUST remain or the pivot tables will fail). Copy the graphics you wish to use in a presentation document and then delete unneeded sheets. (E.g., Delete sheets: Instructions, Severity, Pass Fail, CIS Level, and Services & Accounts). Findings and Customer Review sheets will be one of the main areas where they can review consolidated findings and perform filtering.
