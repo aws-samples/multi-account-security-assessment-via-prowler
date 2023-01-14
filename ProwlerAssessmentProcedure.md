@@ -160,7 +160,7 @@ instance and variables adjusted to tune the scan for specific use cases. Instruc
     REMEDIATION_RECOMMENDATION_URL  REMEDIATION_RECOMMENDATION_CODE_NATIVEIAC   REMEDIATION_RECOMMENDATION_CODE_TERRAFORM   REMEDIATION_RECOMMENDATION_CODE_CLI REMEDIATION_RECOMMENDATION_CODE_OTHER   CATEGORIES  DEPENDS_ON  RELATED_TO  NOTES   PROFILE ACCOUNT_ID  ACCOUNT_NAME    ACCOUNT_EMAIL   ACCOUNT_ARN ACCOUNT_ORG ACCOUNT_TAGS    REGION  RESOURCE_ID RESOURCE_ARN  
 
 6. Select all data from the Prowler generated output file and paste into the prowler-report-template file.  
-    - Manually select all data from columns A through AK and copy to clipboard
+    - Manually select all data from columns A through the last column (Currently AK) and copy to clipboard
     - Switch to the "prowler-report-template.xlsm", go to the "Prowler CSV" sheet, click on Cell A2 and to paste all of the data into this document.
 
     >Notes:
@@ -180,6 +180,7 @@ Select the "Findings" sheet at the bottom of the excel doc, click on A17 (Header
 9. Change the format of the AWS Account numbers to number so they are shown properly  
 Excel doesn't properly display 12-digit AWS account numbers and formats it as an exponential number by default. It is recommended to change the formatting of the column to be number with 0 decimal places. Right click on column A and select "Format Cells…" This will be present in the findings as well and the same formatting change will be needed correct this.  
 ![FormatAdjust](docs/images/FormatAdjust.png)
+
 >Note: Excel will remove starting zeros from AWS Account IDs by default.  If an AWS account ID is LESS THAN 12 characters, it begins with 0
 
 10. Review findings and provide to customer.  
