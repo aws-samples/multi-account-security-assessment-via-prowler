@@ -28,7 +28,9 @@
 #   7) S3_BUCKET: The S3 bucket which will be used for Prowler report upload.
 #       This is set by default to the S3 bucket provisioned during deployment.
 #   8) CONSOLIDATED_REPORT: The name of the output report which does not have any grep filtering performed
+#        Using .txt as 'CSV' output is semicolon delimited
 #   9) CONSOLIDATED_REPORT_FILTERED: The name of the output report which does have grep filtering performed to remove common errors.
+#        Using .txt as 'CSV' output is semicolon delimited
 #       This file is recommended to be used for reporting as know errors are removed and provide cleaner output
 #   10) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
 #       "pipenv run python3 -m prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose > output/stdout-$ACCOUNTID.txt 2>&1"
@@ -61,11 +63,11 @@ ACCOUNTID_WITH_NAME=true
 #S3 bucket where report will be uploaded
 S3_BUCKET="SetBucketName"
 
-#Consolidated output report without error filtering
-CONSOLIDATED_REPORT=output/prowler-fullorgresults.csv
+#Consolidated output report without error filtering (Using .txt as 'CSV' output is semicolon delimited)
+CONSOLIDATED_REPORT=output/prowler-fullorgresults.txt
 
-#Consolidated output report with error filtering (Recommended to be used for reporting)
-CONSOLIDATED_REPORT_FILTERED=output/prowler-fullorgresults-accessdeniedfiltered.csv
+#Consolidated output report with error filtering (Using .txt as 'CSV' output is semicolon delimited) (Recommended to be used for reporting)
+CONSOLIDATED_REPORT_FILTERED=output/prowler-fullorgresults-accessdeniedfiltered.txt
 
 #########################################
 
