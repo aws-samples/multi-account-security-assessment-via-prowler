@@ -139,10 +139,10 @@ fi
 
 echo ""
 echo "All stdout from prowler scans will be redirected to output/stdout-accountId.txt. tail -f these files to monitor progress of individual account assessments"
-echo "When using screen you can:"
+echo "When using screen you can monitor assessments while executing by:"
 echo "  1) Create an additional window (Ctrl-a + c) and tail executed there.  Use (Ctrl-a + n) with switch between windows"
 echo "  or"
-echo "  2) The window where Prowler is executing is manuall detatched (Ctrl-a + d) and tail executed outside of screen. Screen can be resumed with screen -r"
+echo "  2) The window where Prowler is executing is manually detached (Ctrl-a + d) and tail executed outside of screen. Screen can be resumed with screen -r"
 echo ""
 echo "As individual account assessments are completed, additional accounts will be assessed from the list"
 echo ""
