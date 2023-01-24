@@ -108,7 +108,7 @@ management_account_session() {
 process_monitor() {
     while [ "$(jobs | wc -l)" -ge $PARALLELISM ]
     do
-        echo "Sleeping 20 seconds..."
+        echo "Sleeping 20 seconds while waiting for active assessment queue to clear..."
         sleep 20
     done
 }
