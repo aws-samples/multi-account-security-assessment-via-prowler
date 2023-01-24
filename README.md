@@ -16,7 +16,7 @@ While there are many methods to deploy and utilize [Prowler](https://github.com/
 
 CloudFormation templates and the bash script will be updated as new versions of [Prowler](https://github.com/prowler-cloud/prowler) are released, as well as as new common use cases warrant additional script functionality.
 
-**Step by step deployment and usage is provided via the ProwlerAssessmentProcedure.md document.**
+## Step by step deployment and usage is provided via the ProwlerAssessmentProcedure.md document
 
 ## **Technology stack**
 
@@ -43,13 +43,11 @@ Prowler / EC2 / S3 / SNS / IAM
     >Note: The excel document version must match with a supported version of prowler.
 
 - prowler_scan.sh:  
-    Bash script used for assessing multiple AWS accounts in parallel. This script is automatically deployed onto the EC2 instance in the folder /usr/local/bin/prowler via the prowler-resources.yaml CFT in userdata. By default, this script assumes the IAM role “ProwlerExecRole” in the management account to generate a list of member accounts in the AWS Org. The script then uses this list of accounts to begin an assessment of the accounts. As the accounts are assessed, they will output results in the prowler/outputs directory in CSV and HTML formats.  Once all accounts have been assessed, the individual CSV files will be concatenated, duplicate lines removed, and all output files zipped. Note: This script has tunable variables within the script itself (See appendix for more details). This script is provided independently from the CFT for reference.
+    Bash script used for assessing multiple AWS accounts in parallel. This script is automatically deployed onto the EC2 instance in the folder /usr/local/prowler via the prowler-resources.yaml CFT in user data. By default, this script assumes the IAM role “ProwlerExecRole” in the management account to generate a list of member accounts in the AWS Org. The script then uses this list of accounts to begin an assessment of the accounts. As the accounts are assessed, they will output results in the prowler/outputs directory in CSV and HTML formats.  Once all accounts have been assessed, the individual CSV files will be concatenated, duplicate lines removed, and all output files zipped. Note: This script has tunable variables within the script itself (See appendix for more details).
 
 ## **References**
 
 Prowler Source: [https://github.com/prowler-cloud/prowler](https://github.com/prowler-cloud/prowler)
-
-CIS Benchmarks: [https://d0.awsstatic.com/whitepapers/compliance/AWS\_CIS\_Foundations\_Benchmark.pdf](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf)
 
 ## **Link to APG Pattern (Authorized Access Only)**
 

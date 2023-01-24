@@ -10,11 +10,11 @@
 
 ## Overview
 
-Execution of prowler requires deployment of an IAM Role to all accounts being scanned, an IAM Role which the EC2 instance running prowler will utilize, the deployment of an EC2 instance running the prowler software, and an S3 bucket to store the output. This procedure has been validated with prowler versions 2.6-2.12.
+Execution of prowler requires deployment of an IAM Role to all accounts being scanned, an IAM Role which the EC2 instance running prowler will utilize, the deployment of an EC2 instance running the prowler software, and an S3 bucket to store the output. This procedure has been validated with prowler versions 3.x
 
 ## Related Resources
 
-prowler_scan.sh: Bash script used for assessing multiple AWS accounts in parallel. This script is automatically deployed onto the EC2 instance in the folder /usr/local/bin/prowler via the prowler-resources.yaml CFT in userdata. By default, this script assumes the IAM role "ProwlerExecRole" in the management account to generate a list of member accounts in the AWS Org. The script then uses this list of accounts to begin an assessment of the accounts. As the accounts are assessed, they will output results in the prowler/outputs directory in CSV and HTML formats. Once all accounts have been assessed, the individual CSV files will be concatenated, duplicate lines removed, and all output files zipped. Note: This script has tunable variables within the script itself (See appendix for more details). This script is provided independently from the CFT for reference.
+prowler_scan.sh: Bash script used for assessing multiple AWS accounts in parallel. This script is automatically deployed onto the EC2 instance in the folder /usr/local/prowler via the prowler-resources.yaml CFT in user data. By default, this script assumes the IAM role "ProwlerExecRole" in the management account to generate a list of member accounts in the AWS Org. The script then uses this list of accounts to begin an assessment of the accounts. As the accounts are assessed, they will output results in the prowler/outputs directory in CSV and HTML formats. Once all accounts have been assessed, the individual CSV files will be concatenated, duplicate lines removed, and all output files zipped. Note: This script has tunable variables within the script itself (See appendix for more details). This script is provided independently from the CFT for reference.
 
 Prowler-resources.yaml: A CFT template which is deployed in the account where the prowler EC2 instance will be deployed. This template will deploy all necessary dependencies in order for prowler to perform assessments across all accounts. The IAM-ProwlerExecRole is dependent on this template being deployed first. Note: If this stack is deleted and redeployed, the ProwlerExecRole StackSet will need to be re-deployed to rebuild the cross-account dependency between IAM Roles.
 
@@ -39,7 +39,7 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
             - VPCId: Select a VPC in the account
             - SubnetId: Select a private subnet which has Internet access
                 >Note: If a public subnet is selected, the EC2 instance will not provision as the CFT doesn't attach an EIP by default
-            - InstanceType: Select an instance size based on the number of parallel assessments. Guidelines: 4=c6i.large, 6=c6i.xlarge, 8=c6i.2xlarge
+            - InstanceType: Select an instance size based on the number of parallel assessments. Guidelines: 10=r6i.large, 12=r6i.xlarge, 14-18=r6i.2xlarge
             - InstanceImageId: Leave the default for Amazon Linux 2
             - KeyPairName: Specify the name of an existing KeyPair if using SSH for access (This is optional and can be left blank)
             - PermittedSSHInbound: If using SSH for access, specify a permitted CIDR
@@ -106,25 +106,26 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
     ![InstanceConnect](docs/images/InstanceConnect.png)
 
 5. Execute the prowler scan script to begin the assessment
-    >Note: Screen will be used to allow the prowler script to continue executing if console access is lost.  Wait for the Prowler assessment to complete before continuing with Output handling
+    >Notes:
+        >
+        > > - Screen will be used to allow the prowler script to continue executing if console access is lost.  Wait for the Prowler assessment to complete before continuing with Output handling
+        > > - Output from prowler assessments will be redirected to output/stdout-accountId.txt and errors will be shown on the console. tail -f output/stdout-\<accountid\> in the prowler directory to monitor progress of individual account assessments
 
     ```bash
     sudo -i
     screen
-    cd /usr/local/bin/prowler
+    cd /usr/local/prowler
     ./prowler_scan.sh
     ```
 
->Notes:
+    >Notes:
 
-- The prowler_scan.sh script is configured to assess all accounts in the AWS organization along with each region within those accounts. The script can be edited manually on the EC2
-instance and variables adjusted to tune the scan for specific use cases. Instructions are contained in the script at the top of the file.
-- Scans take approx. 1 hour per AWS account to scan. Depending on the number of resources in the account, this time could be less or more. The bash script assesses multiple accounts in parallel.
-- Optionally once the scan is running, force a screen detach by pressing control-a d . Screen will detach and you can close the EC2 connection and allow the assessment to proceed
-- The screen process will keep the session running if the connection to the EC2 instance is dropped or detached.
-  - To resume a detached session, connect to the instance, sudo -i then screen -r
-- If you would like to monitor status of the individual prowler scans,
-  - tail -f output/stdout-\<accountnumber\> in the prowler directory.
+    - The prowler_scan.sh script is configured to assess all accounts in the AWS organization along with each region within those accounts. The script can be edited manually on the EC2
+    instance and variables adjusted to tune the scan for specific use cases. Instructions are contained in the script at the top of the file.
+    - Assessments take approx. 5 minutes per AWS account to scan. Depending on the number of resources in the account, this time could be less or more. The bash script assesses multiple accounts in parallel.
+    - Optionally once the scan is running, force a screen detach by pressing control-a + d . Screen will detach and you can close the EC2 connection and allow the assessment to proceed
+    - The screen process will keep the session running if the connection to the EC2 instance is dropped or detached.
+    - To resume a detached session, connect to the instance, sudo -i then screen -r
 
 ## Output Handling
 
@@ -138,63 +139,89 @@ instance and variables adjusted to tune the scan for specific use cases. Instruc
 3. Expand the zip file containing all of the output.
     >Note: The stdout-\<accountid\> files included in the zip can be used for prowler execution review or troubleshooting, but will be not be processed for a report.
 
-4. Open the "prowler-report-template.xlsm" excel document and select the "Prowler CSV" sheet. Delete all sample data except for Row 1 which is the header.
+4. Prepare the PivotTable Excel Template for environment data  
+    Open the "prowler-report-template.xlsm" excel document and select the "Prowler CSV" sheet  
+    Delete all sample data except for Row 1 which is the header
+    >Note: If asked whether to delete the query associated with the data being removed, click no to prevent problems with the PivotTable.
 
-5. Open the "prowler-fullorgresults.csv" (or alternatively prowler-fullorgresults-accessdeniedfiltered.csv ) file with excel and remove the header row which should be the very first row of data.
-    >Note: The prowler-fullorgresults-accessdeniedfiltered.csv is a filtered version of the output file which has been generated as part of the prowler_scan.sh file to remove common errors related to attempted scans on Control Tower resources.
-
-    The sorting process within the prowler_scan.sh file should consolidate all headers into a single entry and then move it to the very top of the file. If it is not at the top, check the last very bottom.  
-
-    Delete the Header row as it is already present in the "prowler-report-template.xlsm" excel document  
-
-    e.g.  
-    PROFILE,ACCOUNT_NUM,REGION,TITLE_ID,CHECK_RESULT,ITEM_SCORED,ITEM_LEVEL,TITLE_TEXT,CHECK_RESULT_EXTENDED,CHECK_ASFF_COMPLIANCE_TYPE,CHECK_SEVERITY,CHECK_SERVICENAME,CHECK_ASFF_RESOURCE_TYPE,CHECK_ASFF_TYPE,CHECK_RISK,CHECK_REMEDIATION,CHECK_DOC,CHECK_CAF_EPIC,CHECK_RESOURCE_ID,PROWLER_START_TIME,ACCOUNT_DETAILS_EMAIL,ACCOUNT_DETAILS_NAME,ACCOUNT_DETAILS_ARN,ACCOUNT_DETAILS_ORG,ACCOUNT_DETAILS_TAGS  
-
-6. Select all data from the Prowler generated output file and paste into the prowler-report-template file.  
-    - Manually select all data from columns B through Y and copy to clipboard (control-c)
-    - Switch to the "prowler-report-template.xlsm", go to the "Prowler CSV" sheet, click on Cell B2 and Control-v to paste all of the data into this document.
+5. Transfer the output from the Prowler assessment into the "prowler-report-template.xlsx" Excel PivotTable template
+    - Open the "prowler-fullorgresults-accessdeniedfiltered.txt" (or alternatively prowler-fullorgresults.txt) file with excel
+    - Delete the header row which should be the very first row as it is already in the "prowler-report-template.xlsm" excel document
+    - Select from A1 to the very last row in A and copy this data into the clipboard
+        - Do not click the A column as this won't let you paste into the excel template on cell A2.
+        - Use keyboard shortcuts to quickly select  (All of the data exists in column A as it is not yet separated into columns via the semicolon delimiter)
+            - Mac OS: Click on A2, Command+Shift+Down Arrow, then command+c to copy into clipboard
+            - Windows OS: Click on A2, CTRL+Shift+Down Arrow, then CTRL+c to copy into clipboard
+    - Open the "prowler-report-template.xlsx" file and click on the "Prowler CSV" sheet
+    - Paste the clipboard data into cell A2 so that it populates Column A
+        - Mac OS: Command+v
+        - Windows OS: CTRL+v
+    - Instruct Excel to convert the data into columns by delimiting with the semicolon.
+        - The pasted data should be selected.  If not, select all data in column A EXCEPT A1 which is the header
+        - Click the Excel "Data" menu item
+        - Click "Text to Columns"
+        - Select "Delimited"
+        - Next
+        - Select "Semicolon" as a delimiter and validate the "Data Preview" shows the data being separated into columns
+        - click "Finish"
+            >Note: You should NOT receive a warning stating "There's already data here. Do you want to replace it?"  If you proceed, you will overwrite the header.  Make sure to only select the data from A2 down and not the header in A1.  
 
     >Notes:
     >
-    > > - Control-A doesn't work because we need to paste into row 2 and preserve the header in row 1.
-    > > - There may be "Access Denied" errors which may their way into the output, these should be deleted from the data before copying into the template so they don't appear in the findings. A couple options are specified in the Appendix of this document for removing Access Denied errors via command line.
-    > > - It is recommended to use the prowler-fullorgresults-accessdeniedfiltered.csv file which has already been processed to remove the most common errors.
-    > > - The PROFILE, ACCOUNT_DETAILS_EMAIL, ACCOUNT_DETAILS_NAME, ACCOUNT_DETAILS_ARN, ACCOUNT_DETAILS_ORG, ACCOUNT_DETAILS_TAGS columns may be empty.
+    > > - There may be "Access Denied" errors which may their way into the output, these should be deleted from the Prowler CSV data before copying into the template so they don't appear in the findings. A couple options are specified in the Appendix of this document for removing Access Denied errors via command line if necessary.
+    > > - It is recommended to use the prowler-fullorgresults-accessdeniedfiltered.txt file which has already been processed to remove the most common errors such as "Access Denied" related to attempted scans on Control Tower resources.
 
-7. Validate that the document contains the customer's data and looks similar to the image below.  
-![CustSanitizedData](docs/images/CustSanitizedData.png)
+6. Validate that the document contains the assessed environments's data and looks similar to the image below.  
 
-8. Change the format of the obfuscated ACCOUNT_NUM column  
-Excel doesn't properly display 12-digit AWS account numbers and formats it as an exponential number by default. It is recommended to change the formatting of the column to be number with 0 decimal places. Right click on column B and select "Format Cells…" This will be present in the findings as well and the same formatting change will be needed correct this.  
-![FormatAdjust](docs/images/FormatAdjust.png)
+    ![CustSanitizedData](docs/images/CustSanitizedData.png)
 
-9. Refresh Findings and graph pivot tables  
-Select the "Findings" sheet at the bottom of the excel doc, click on A17 (Header of the pivot table) to select the PivotTable header, click "PivotTable Analyze" at the top toolbar, then click the dropdown next to Refresh, and click Refresh All. This will incorporate all new CSV output into the tables.  
-![PivotRefresh](docs/images/PivotRefresh.png)
+7. Refresh Findings and graph pivot tables  
+    Select the "Findings" sheet at the bottom of the excel doc, click on A17 (Header of the pivot table) to select the PivotTable header, click "PivotTable Analyze" at the top toolbar, then click the dropdown next to Refresh, and click Refresh All. This will incorporate all new CSV output into the tables and tabs.
 
-10. Review findings and provide to customer.  
-The findings, severity, and customer review sheets provide details for analysis. If the excel is provided to the customer, delete as many tabs as possible to reduce complexity (Prowler CSV tab MUST remain or the pivot tables will fail). Copy the graphics you wish to use in a presentation document and then delete unneeded sheets. (E.g., Delete sheets: Instructions, Severity, Pass Fail, CIS Level, and Services & Accounts). Findings and Customer Review sheets will be one of the main areas where they can review consolidated findings and perform filtering.
+    ![PivotRefresh](docs/images/PivotRefresh.png)
 
-11. If this Prowler deploy is not going to be utilized for future assessments, clean up the environment by deleting all Stacks and StackSets associated with this deployment.
+8. Change the format of the AWS Account numbers to number so they are shown properly  
+    Excel doesn't properly display 12-digit AWS account numbers and formats it as an exponential number by default. It is recommended to change the formatting of the column to be number with 0 decimal places.  
+    - Right click on column A and select "Format Cells…" This will be present in the findings as well and the same formatting change will be needed correct this.  
+    >Note: Excel will remove starting zeros from AWS Account IDs by default.  If an AWS account ID is LESS THAN 12 characters, it begins with 0
+
+    ![FormatAdjust](docs/images/FormatAdjust.png)
+
+9. Collapse fields for easier reading of findings (Optional)  
+    If you move the mouse to the line between rows 18 and 19 (The space between the critical header and the first finding), the cursor should change to a small arrow pointing down.
+    - Click at this point to select all finding fields
+    - Right click and locate "Expand/Collapse"
+    - Click "Collapse"
+
+10. Creation of a report  
+    The findings, severity, and customer review sheets provide details of the assessment. If the excel is provided to the customer, delete as many tabs as possible to reduce complexity (Prowler CSV tab MUST remain or the pivot tables will fail). Copy the graphics you wish to use into a presentation document and then delete unneeded Excel sheets. Findings and Customer Review sheets will be the primary focus for review of consolidated findings and performing filtering.
+
+11. Cleanup the deployment  
+    If this Prowler deploy is not going to be utilized for future assessments, clean up the environment by deleting all Stacks and StackSets associated with this deployment.
 
 ## Appendix
 
-1. The /usr/local/bin/prowler/prowler_scan.sh script drives the behavior of the Prowler based assessment. The default design is to generate a list of all AWS accounts within the AWS Organization and to scan up to 8 at a time including all regions within the account. This may not serve every use case and tunable variables have been included at the top of the script to allow for modification of this behavior.
-    - PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously. The instance size must be adjusted appropriately. Be aware of AWS Account level EC2 API throttling limits and to execute this script in an account with minimal workloads. C6i.2xlarge can sustain 9 parallel assessments. Utilize appropriately sized EC2 instance (4=c6i.large,6=c6i.xlarge, 8=c6i.2xlarge)
+1. The /usr/local/prowler/prowler_scan.sh script drives the behavior of the Prowler based assessment. The default design is to generate a list of all AWS accounts within the AWS Organization and to scan up to 8 at a time including all regions within the account. This may not serve every use case and tunable variables have been included at the top of the script to allow for modification of this behavior.
+    - PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously. The instance size must be adjusted appropriately. Be aware of AWS Account level EC2 API throttling limits and to execute this script in an account with minimal workloads. r6i.xlarge can sustain 12 parallel assessments. Utilize appropriately sized EC2 instance (10=r6i.large,12=r6i.xlarge, 14-18=r6i.2xlarge)
     - AWSACCOUNT_LIST: Specify the accounts to be assessed using one of the supported methods:
       - Use the keyword allaccounts to generate a list of all accounts in the AWS Org
       - Use the keyword inputfile to read in AWS Account IDs from a file (If using this mode, must also set AWSACCOUNT_LIST_FILE)
       - Use a space separated list of AWS Account IDs
     - AWSACCOUNT_LIST_FILE: If using AWSACCOUNT_LIST="inputfile", specify the path to the file
-            >Note: If the file is located in the /use/local/bin/prowler directory, specify the filename, else specify the full path. Account IDs can be specified on one line (space separated) or one Account ID per line
+            >Note: If the file is located in the /use/local/prowler directory, specify the filename, else specify the full path. Account IDs can be specified on one line (space separated) or one Account ID per line
     - REGION_LIST: Specify regions (SPACE DELIMITED) if you wish to assess specific AWS regions or leave allregions to include all AWS regions.
     - IAM_CROSS_ACCOUNT_ROLE: The IAM Role name created for cross account access
     - ACCOUNTID_WITH_NAME: By default, the value is true, the value of ACCOUNT_NUM column in the final report is populated with Account Name in the format \<AccountId-AccountName\>. Changing the value to false will produce the report with ACCOUNT_NUM=\<AccountId\>.
     - S3_BUCKET: The S3 bucket which will be used for Prowler report upload
+    - CONSOLIDATED_REPORT: The name of the output report which does not have any grep filtering performed  
+        The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel
+    - CONSOLIDATED_REPORT_FILTERED: The name of the output report which does have grep filtering performed to remove common errors.  
+        The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel  
+        This file is recommended to be used for reporting as know errors are removed and provide cleaner output  
     - The prowler command within the for loop can also be tuned to meet the needs of the assessment.  
-        "./prowler -R ProwlerExecRole -A "$ACCOUNTID" -M csv,html -T 43200 \> output/stdout-$ACCOUNTID.txt 2\>&1"
+        "pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null"
 
-2. Resource estimates: 4 parallel scans with c6i.large utilizes CPU at 80-90% ($2/day), 6 parallel scans with c6i.xlarge utilizes CPU at 85-90% ($4/day), 8 parallel scans with c6i.2xlarge utilizes CPU at 60-70% ($8/day). C5 was tested against T3 (Unlimited CPU Credits) and was only slightly more expensive, but reduced scan time. CPU should always remain under 92% while the script is executing else scan speed will be impacted.
+2. Resource estimates: 10 parallel scans with r6.large ($3/day), 12 parallel scans with r6i.xlarge ($6/day), 14-18 parallel scans with r6i.2xlarge ($12/day). Prowler v3 utilizes more memory than CPU and while a swap file has been added as a buffer, total memory of the EC shouldn't be used over 90%.
 
 3. HTML files are output during the Prowler assessment and may be used as an alternative to the CSV. Due to the nature of HTML, they are not concatenated, processed, nor used directly in this procedure, however may be useful for individual account report review.
 
@@ -234,7 +261,7 @@ The findings, severity, and customer review sheets provide details for analysis.
 
     ```bash
     ACCOUNTS_IN_ORGS=$(aws organizations list-accounts --output text --query 'Accounts[?Status==`ACTIVE`].Id')  
-    for accountId in $ACCOUNTS_IN_ORGS; do ./prowler -A $accountId -R ProwlerExecRole -M csv,html -n -T 43200 \> stdout-$accountId 2\>&1; done  
+    for accountId in $ACCOUNTS_IN_ORGS; do pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null; done  
     ```
 
 6. Single threaded scanning on specific accounts:
@@ -242,5 +269,5 @@ The findings, severity, and customer review sheets provide details for analysis.
 
     ```bash
     ACCOUNTS_TO_SCAN="111111111111 22222222222 33333333333"  
-    for accountId in $ACCOUNTS_TO_SCAN; do ./prowler -A $accountId -R ProwlerExecRole -M csv,html -n -T 43200 \> stdout-$accountId 2\>&1; done
+    for accountId in $ACCOUNTS_TO_SCAN; do pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null; done
     ```
