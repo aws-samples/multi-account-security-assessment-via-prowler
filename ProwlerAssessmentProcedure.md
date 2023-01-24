@@ -1,6 +1,6 @@
-# Multi-Account Security Assessment via Prowler with Batching and Post Processing
+# **Multi-Account Security Assessment via Prowler with Batching and Post Processing**
 
-## Table of Contents
+## **Table of Contents**
 
 1. [Overview](#overview)
 2. [Related Resources](#related-resources)
@@ -8,11 +8,11 @@
 4. [Output Handling](#output-handling)
 5. [Appendix](#appendix)
 
-## Overview
+## **Overview**
 
 Execution of prowler requires deployment of an IAM Role to all accounts being scanned, an IAM Role which the EC2 instance running prowler will utilize, the deployment of an EC2 instance running the prowler software, and an S3 bucket to store the output. This procedure has been validated with prowler versions 3.x
 
-## Related Resources
+## **Related Resources**
 
 prowler_scan.sh: Bash script used for assessing multiple AWS accounts in parallel. This script is automatically deployed onto the EC2 instance in the folder /usr/local/prowler via the prowler-resources.yaml CFT in user data. By default, this script assumes the IAM role "ProwlerExecRole" in the management account to generate a list of member accounts in the AWS Org. The script then uses this list of accounts to begin an assessment of the accounts. As the accounts are assessed, they will output results in the prowler/outputs directory in CSV and HTML formats. Once all accounts have been assessed, the individual CSV files will be concatenated, duplicate lines removed, and all output files zipped. Note: This script has tunable variables within the script itself (See appendix for more details). This script is provided independently from the CFT for reference.
 
@@ -22,7 +22,7 @@ IAM-ProwlerExecRole.yaml: A CFT template to be deployed via StackSet across all 
 
 prowler-report-template.xlsm: An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings. Note: The excel document version must match with a supported version of prowler.
 
-## Implementation Procedure
+## **Implementation Procedure**
 
 1. Deploy the EC2 instance and supporting resources (prowler-resources.yaml)  
     >Note: When deploying the CFT template, it will provision an IAM Role, S3 Bucket with policy, SNS Topic, and EC2 instance which will be used by Prowler.
@@ -127,7 +127,7 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
     - The screen process will keep the session running if the connection to the EC2 instance is dropped or detached.
     - To resume a detached session, connect to the instance, sudo -i then screen -r
 
-## Output Handling
+## **Output Handling**
 
 >Note: The Prowler assessment must already be completed before continuing with this section.  The zip file will be present in the S3 bucket, and if SNS configured, an email delivered.
 
@@ -199,63 +199,89 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
 11. Cleanup the deployment  
     If this Prowler deploy is not going to be utilized for future assessments, clean up the environment by deleting all Stacks and StackSets associated with this deployment.
 
-## Appendix
+## **Appendix**
 
-1. The /usr/local/prowler/prowler_scan.sh script drives the behavior of the Prowler based assessment. The default design is to generate a list of all AWS accounts within the AWS Organization and to scan up to 8 at a time including all regions within the account. This may not serve every use case and tunable variables have been included at the top of the script to allow for modification of this behavior.
-    - PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously. The instance size must be adjusted appropriately. Be aware of AWS Account level EC2 API throttling limits and to execute this script in an account with minimal workloads. r6i.xlarge can sustain 12 parallel assessments. Utilize appropriately sized EC2 instance (10=r6i.large,12=r6i.xlarge, 14-18=r6i.2xlarge)
-    - AWSACCOUNT_LIST: Specify the accounts to be assessed using one of the supported methods:
-      - Use the keyword allaccounts to generate a list of all accounts in the AWS Org
-      - Use the keyword inputfile to read in AWS Account IDs from a file (If using this mode, must also set AWSACCOUNT_LIST_FILE)
-      - Use a space separated list of AWS Account IDs
-    - AWSACCOUNT_LIST_FILE: If using AWSACCOUNT_LIST="inputfile", specify the path to the file
-            >Note: If the file is located in the /use/local/prowler directory, specify the filename, else specify the full path. Account IDs can be specified on one line (space separated) or one Account ID per line
-    - REGION_LIST: Specify regions (SPACE DELIMITED) if you wish to assess specific AWS regions or leave allregions to include all AWS regions.
-    - IAM_CROSS_ACCOUNT_ROLE: The IAM Role name created for cross account access
-    - ACCOUNTID_WITH_NAME: By default, the value is true, the value of ACCOUNT_NUM column in the final report is populated with Account Name in the format \<AccountId-AccountName\>. Changing the value to false will produce the report with ACCOUNT_NUM=\<AccountId\>.
-    - S3_BUCKET: The S3 bucket which will be used for Prowler report upload
-    - CONSOLIDATED_REPORT: The name of the output report which does not have any grep filtering performed  
-        The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel
-    - CONSOLIDATED_REPORT_FILTERED: The name of the output report which does have grep filtering performed to remove common errors.  
-        The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel  
-        This file is recommended to be used for reporting as know errors are removed and provide cleaner output  
-    - The prowler command within the for loop can also be tuned to meet the needs of the assessment.  
-        "pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null"
+### **Script Variables**
 
-2. Resource estimates: 10 parallel scans with r6.large ($3/day), 12 parallel scans with r6i.xlarge ($6/day), 14-18 parallel scans with r6i.2xlarge ($12/day). Prowler v3 utilizes more memory than CPU and while a swap file has been added as a buffer, total memory of the EC shouldn't be used over 90%.
+The /usr/local/prowler/prowler_scan.sh script drives the behavior of the Prowler based assessment.  
+The default design is to generate a list of all AWS accounts within the AWS Organization and to scan up to 12 at a time including all regions within the account.  
+This may not serve every use case and tunable variables have been included at the top of the script to allow for modification of this behavior.
 
-3. HTML files are output during the Prowler assessment and may be used as an alternative to the CSV. Due to the nature of HTML, they are not concatenated, processed, nor used directly in this procedure, however may be useful for individual account report review.
+- PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously. The instance size must be adjusted appropriately. r6i.xlarge can sustain 12 parallel assessments.
+- AWSACCOUNT_LIST: Specify the accounts to be assessed using one of the supported methods:
+  - Use the keyword allaccounts to generate a list of all accounts in the AWS Org
+  - Use the keyword inputfile to read in AWS Account IDs from a file (If using this mode, must also set AWSACCOUNT_LIST_FILE)
+  - Use a space separated list of AWS Account IDs
+- AWSACCOUNT_LIST_FILE: If using AWSACCOUNT_LIST="inputfile", specify the path to the file
+        >Note: If the file is located in the /use/local/prowler directory, specify the filename, else specify the full path. Account IDs can be specified on one line (space separated) or one Account ID per line
+- REGION_LIST: Specify regions (SPACE DELIMITED) if you wish to assess specific AWS regions or leave allregions to include all AWS regions.
+- IAM_CROSS_ACCOUNT_ROLE: The IAM Role name created for cross account access
+- ACCOUNTID_WITH_NAME: By default, the value is true, the value of ACCOUNT_NUM column in the final report is populated with Account Name in the format \<AccountId-AccountName\>. Changing the value to false will produce the report with ACCOUNT_NUM=\<AccountId\>.
+- S3_BUCKET: The S3 bucket which will be used for Prowler report upload
+- CONSOLIDATED_REPORT: The name of the output report which does not have any grep filtering performed  
+    The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel
+- CONSOLIDATED_REPORT_FILTERED: The name of the output report which does have grep filtering performed to remove common errors.  
+    The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel  
+    This file is recommended to be used for reporting as know errors are removed and provide cleaner output  
+- The prowler command within the for loop can also be tuned to meet the needs of the assessment.  
+    "pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null"
 
-4. If the results contain "Access Denied" errors, you will want to remove them from the findings before processing. The errors are typically due to external influencing permissions which blocked Prowler from assessing a particular resource. For example, some checks fail when reviewing Control Tower buckets "Access Denied getting bucket location for aws-controltower-logs-XXXXXXXXXXXX." These error messages should be removed from the consolidated output CSV file and then copied into the excel sheet.  
+### **Update Components**
 
-    How to filter results by removing rows which contain a pattern and outputting the results to a new file:
+Code updates are made to the GitHub repos to add new functionality and correct potential issues.  
+In order to pull these updates into an existing deployment, steps are provided below:
+    - Prowler and dependencies
+        - pip3 install --upgrade prowler
+    - prowler_scan.sh script
+        - cd /usr/local/prowler
+        - git stash
+        - git pull
+        - git stash pop
 
-    - Linux/Mac:  
+### **Resource Estimates**
 
-        ```bash
-        grep -v -i "Access Denied getting bucket" myoutput.csv > myoutput_modified.csv
-        ```
+10 parallel scans with r6.large ($3/day), 12 parallel scans with r6i.xlarge ($6/day), 14-18 parallel scans with r6i.2xlarge ($12/day).  
+Prowler v3 utilizes more memory than CPU and while a swap file has been added as a buffer, total memory of the EC shouldn't be used over 90%.
 
-    - Windows: (PowerShell)  
+### **Output Options**
 
-        ```powershell
-        Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket' -NotMatch > myoutput_modified.csv
-        ```
+HTML files are output during the Prowler assessment and may be used as an alternative to the CSV. Due to the nature of HTML, they are not concatenated, processed, nor used directly in this procedure, however may be useful for individual account report review.
 
-    **Multiple patterns can be matched and processed at the same time:**  
+### **Output Filtering**
 
-    - Linux/Mac: (Grep uses an escaped pipe)  
+If the results contain "Access Denied" errors, you will want to remove them from the findings before processing. The errors are typically due to external influencing permissions which blocked Prowler from assessing a particular resource. For example, some checks fail when reviewing Control Tower buckets "Access Denied getting bucket location for aws-controltower-logs-XXXXXXXXXXXX." These error messages should be removed from the consolidated output CSV file and then copied into the excel sheet.  
 
-        ```bash
-        grep -v -i 'Access Denied getting bucket\|Access Denied Trying to Get' myoutput.csv > myoutput_modified.csv
-        ```
+How to filter results by removing rows which contain a pattern and outputting the results to a new file:
 
-    - Windows: (PowerShell: Select-String uses a comma)  
+- Linux/Mac:  
 
-        ```powershell
-        Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket', 'Access Denied Trying to Get' -NotMatch > myoutput_modified.csv
-        ```
+    ```bash
+    grep -v -i "Access Denied getting bucket" myoutput.csv > myoutput_modified.csv
+    ```
 
-5. Single Threaded multi-account scanning:
+- Windows: (PowerShell)  
+
+    ```powershell
+    Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket' -NotMatch > myoutput_modified.csv
+    ```
+
+**Multiple patterns can be matched and processed at the same time:**  
+
+- Linux/Mac: (Grep uses an escaped pipe)  
+
+    ```bash
+    grep -v -i 'Access Denied getting bucket\|Access Denied Trying to Get' myoutput.csv > myoutput_modified.csv
+    ```
+
+- Windows: (PowerShell: Select-String uses a comma)  
+
+    ```powershell
+    Select-String -Path myoutput.csv -Pattern 'Access Denied getting bucket', 'Access Denied Trying to Get' -NotMatch > myoutput_modified.csv
+    ```
+
+### **Account Scanning Options**
+
+- Single Threaded multi-account scanning:
     >Gather a list of all accounts in the AWS Org and execute Prowler in a loop for all accounts stored in env variable ACCOUNTS_IN_ORGS  
     Note: "aws organizations list-accounts" can only be run in the management account or an AWS account which has been delegated admin (CloudFormation StackSet/IAM Access Analyzer/etc)  
 
@@ -264,7 +290,7 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
     for accountId in $ACCOUNTS_IN_ORGS; do pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null; done  
     ```
 
-6. Single threaded scanning on specific accounts:
+- Single threaded scanning on specific accounts:
     >Specify specific accounts to scan: (Manually specify AWS Account ID separated by whitespace) and then execute Prowler in a loop for accounts specified in the ACCOUNTS_TO_SCAN variable
 
     ```bash
