@@ -208,35 +208,47 @@ The default design is to generate a list of all AWS accounts within the AWS Orga
 This may not serve every use case and tunable variables have been included at the top of the script to allow for modification of this behavior.
 
 - PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously. The instance size must be adjusted appropriately. r6i.xlarge can sustain 12 parallel assessments.
+    >Default Value: r6i.xlarge
 - AWSACCOUNT_LIST: Specify the accounts to be assessed using one of the supported methods:
+    >Default Value: allaccounts
   - Use the keyword allaccounts to generate a list of all accounts in the AWS Org
   - Use the keyword inputfile to read in AWS Account IDs from a file (If using this mode, must also set AWSACCOUNT_LIST_FILE)
   - Use a space separated list of AWS Account IDs
 - AWSACCOUNT_LIST_FILE: If using AWSACCOUNT_LIST="inputfile", specify the path to the file
-        >Note: If the file is located in the /use/local/prowler directory, specify the filename, else specify the full path. Account IDs can be specified on one line (space separated) or one Account ID per line
+    >Note: If the file is located in the /use/local/prowler directory, specify the filename, else specify the full path. Account IDs can be specified on one line (space separated) or one Account ID per line
 - REGION_LIST: Specify regions (SPACE DELIMITED) if you wish to assess specific AWS regions or leave allregions to include all AWS regions.
+    >Default Value: allregions
 - IAM_CROSS_ACCOUNT_ROLE: The IAM Role name created for cross account access
+    >Default Value: ProwlerExecRole
 - ACCOUNTID_WITH_NAME: By default, the value is true, the value of ACCOUNT_NUM column in the final report is populated with Account Name in the format \<AccountId-AccountName\>. Changing the value to false will produce the report with ACCOUNT_NUM=\<AccountId\>.
+    >Default Value: true
 - S3_BUCKET: The S3 bucket which will be used for Prowler report upload
+    >Default Value: N/A - Dynamically generated based on the S3 bucket created via the CFN template
 - CONSOLIDATED_REPORT: The name of the output report which does not have any grep filtering performed  
+    >Default Value: output/prowler-fullorgresults.txt
     The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel
 - CONSOLIDATED_REPORT_FILTERED: The name of the output report which does have grep filtering performed to remove common errors.  
+    >Default Value: output/prowler-fullorgresults-accessdeniedfiltered.txt
     The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel  
     This file is recommended to be used for reporting as know errors are removed and provide cleaner output  
 - The prowler command within the for loop can also be tuned to meet the needs of the assessment.  
-    "pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null"
+    >Default Value: pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 
 ### **Update Components**
 
 Code updates are made to the GitHub repos to add new functionality and correct potential issues.  
 In order to pull these updates into an existing deployment, steps are provided below:
-    - Prowler and dependencies
-        - pip3 install --upgrade prowler
-    - prowler_scan.sh script
-        - cd /usr/local/prowler
-        - git stash
-        - git pull
-        - git stash pop
+
+- Prowler and dependencies
+  - Log into the EC2 Instance and sudo to root: sudo -i
+  - Execute pip3 to upgrade the Prowler package: pip3 install --upgrade prowler
+- prowler_scan.sh script
+  - Log into the EC2 Instance and sudo to root: sudo -i
+  - Change Directory to the Prowler script: cd /usr/local/prowler
+  - Stash all local changes before git pull so they can be merged back in: git stash
+  - Pull the latest repo files: git pull
+  - Merge stashed local changes back into the latest script: git stash pop
+    >Note: Warnings may appear related to any locally generated files (e.g. finding reports) which are not in the GitHub repo.  This is safe to ignore as long as the naa-script.sh shows the local stashed changes are merged back in.
 
 ### **Resource Estimates**
 
