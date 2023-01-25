@@ -242,7 +242,7 @@ In order to pull these updates into an existing deployment, steps are provided b
 - Prowler and dependencies
   - Log into the EC2 Instance and sudo to root: sudo -i
   - Execute pip3 to upgrade the Prowler package: pip3 install --upgrade prowler
-- prowler_scan.sh script
+- prowler_scan.sh script (While maintaining local script parameter values with git stash)
   - Log into the EC2 Instance and sudo to root: sudo -i
   - Change Directory to the Prowler script: cd /usr/local/prowler
   - Stash all local changes before git pull so they can be merged back in: git stash
@@ -252,7 +252,7 @@ In order to pull these updates into an existing deployment, steps are provided b
 
 ### **Resource Estimates**
 
-10 parallel scans with r6.large ($3/day), 12 parallel scans with r6i.xlarge ($6/day), 14-18 parallel scans with r6i.2xlarge ($12/day).  
+10 parallel scans with r6i.large ($3/day), 12 parallel scans with r6i.xlarge ($6/day), 14-18 parallel scans with r6i.2xlarge ($12/day).  
 Prowler v3 utilizes more memory than CPU and while a swap file has been added as a buffer, total memory of the EC shouldn't be used over 90%.
 
 ### **Output Options**
