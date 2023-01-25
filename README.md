@@ -49,6 +49,8 @@ Prowler / EC2 / S3 / SNS / IAM
 
 Prowler Source: [https://github.com/prowler-cloud/prowler](https://github.com/prowler-cloud/prowler)
 
+Prowler Documentation: [https://docs.prowler.cloud](https://docs.prowler.cloud)
+
 ## **Link to APG Pattern (Authorized Access Only)**
 
 [https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b](https://apg-library.amazonaws.com/content/81ba9037-9958-4e4a-95b7-d68896075a5b)
