@@ -7,6 +7,13 @@
 3. [Implementation Procedure](#implementation-procedure)
 4. [Output Handling](#output-handling)
 5. [Appendix](#appendix)
+    - [Script Variables](#script-variables)
+    - [Update Components](#update-components)
+    - [Resource Estimates](#resource-estimates)
+    - [Output Options](#output-options)
+    - [Upgrade an existing Prowler V2 deployment to Prowler V3](#upgrade-an-existing-prowler-v2-deployment-to-prowler-v3)
+    - [Output Filtering](#output-filtering)
+    - [Account Scanning Options](#account-scanning-options)
 
 ## **Overview**
 
