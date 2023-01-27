@@ -259,6 +259,38 @@ Prowler v3 utilizes more memory than CPU and while a swap file has been added as
 
 HTML files are output during the Prowler assessment and may be used as an alternative to the CSV. Due to the nature of HTML, they are not concatenated, processed, nor used directly in this procedure, however may be useful for individual account report review.
 
+### **Upgrade an existing Prowler V2 deployment to Prowler V3**
+
+>Note: This section applies only to existing deployments of Prowler which were done with the V2 version of this solution.  
+> >With in-place upgrading, the IAM cross account roles will remain intact and won't require to be provisioned.
+
+1. Log into the AWS Account where prowler-resources.yaml was deployed via CloudFormation
+2. Open the CloudFormation console
+3. Select the Prowler-Resources Stack
+    - Click Update
+    - Prerequisite - Prepare template
+        - Replace current template
+        - Upload a template file
+            - Select the V3 prowler-resources.yaml file
+            - Next
+    - Specify stack details
+        - SubnetId: Select a NEW private subnet with Internet access so that the EC2 instance is recreated in the new subnet using the Prowler V3 build specs
+            >Note: Review which subnet the existing instance is deployed in and select a DIFFERENT subnet for this new deploy.
+            > >The previous prowlerec2 instance WILL BE TERMINATED.  
+            > >The stock deploy doesn't have anything which needs to be saved, but if there is anything custom, back it up
+        - InstanceType: Select r6i.xlarge (r5.xlarge can be used in regions where r6i isn't yet supported)
+        - Parallelism: Select 12
+    - Next
+    - Next
+    - Review the summary
+    - Check the box for "The following resource(s) require capabilities: [AWS::IAM::Role]" and Create Stack
+    - Submit
+
+    >Note: Once the CloudFormation stack is updated, it will take approx 5 minutes for the new EC2.  
+    > >It will be possible to log in via SSM Connect, however the build will still be deploying dependencies.  
+    > >Once the build is complete, /usr/local/prowler will be accessible.  
+    > >If logged in prior to the build completely, it's recommended to log out and log back in to make sure the binary path is properly configured else the script may fail to properly execute
+
 ### **Output Filtering**
 
 If the results contain "Access Denied" errors, you will want to remove them from the findings before processing. The errors are typically due to external influencing permissions which blocked Prowler from assessing a particular resource. For example, some checks fail when reviewing Control Tower buckets "Access Denied getting bucket location for aws-controltower-logs-XXXXXXXXXXXX." These error messages should be removed from the consolidated output CSV file and then copied into the excel sheet.  
