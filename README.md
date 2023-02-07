@@ -38,7 +38,7 @@ Prowler / EC2 / S3 / SNS / IAM
 - IAM-ProwlerExecRole.yaml:  
     A CFT to be deployed via StackSet across all member accounts (including the AWS Org Root/Management account). This will create an IAM Role which can be assumed by prowler during scanning.
 
-- prowler-report-template.xlsm:  
+- prowler3-report-template.xlsx:  
     An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings.
     >Note: The excel document version must match with a supported version of prowler.
 
