@@ -27,7 +27,7 @@ Prowler-resources.yaml: A CFT template which is deployed in the account where th
 
 IAM-ProwlerExecRole.yaml: A CFT template to be deployed via StackSet across all member accounts. This will create an IAM Role which can be assumed by prowler during scanning.
 
-prowler-report-template.xlsm: An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings. Note: The excel document version must match with a supported version of prowler.
+prowler3-report-template.xlsx: An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings. Note: The excel document version must match with a supported version of prowler.
 
 ## **Implementation Procedure**
 
@@ -147,19 +147,19 @@ prowler-report-template.xlsm: An excel document for processing of findings. Pivo
     >Note: The stdout-\<accountid\> files included in the zip can be used for prowler execution review or troubleshooting, but will be not be processed for a report.
 
 4. Prepare the PivotTable Excel Template for environment data  
-    Open the "prowler-report-template.xlsm" excel document and select the "Prowler CSV" sheet  
+    Open the "prowler3-report-template.xlsx" excel document and select the "Prowler CSV" sheet  
     Delete all sample data except for Row 1 which is the header
     >Note: If asked whether to delete the query associated with the data being removed, click no to prevent problems with the PivotTable.
 
-5. Transfer the output from the Prowler assessment into the "prowler-report-template.xlsx" Excel PivotTable template
+5. Transfer the output from the Prowler assessment into the "prowler3-report-template.xlsx" Excel PivotTable template
     - Open the "prowler-fullorgresults-accessdeniedfiltered.txt" (or alternatively prowler-fullorgresults.txt) file with excel
-    - Delete the header row which should be the very first row as it is already in the "prowler-report-template.xlsm" excel document
+    - Delete the header row which should be the very first row as it is already in the "prowler3-report-template.xlsx" excel document
     - Select from A1 to the very last row in A and copy this data into the clipboard
         - Do not click the A column as this won't let you paste into the excel template on cell A2.
         - Use keyboard shortcuts to quickly select  (All of the data exists in column A as it is not yet separated into columns via the semicolon delimiter)
             - Mac OS: Click on A2, Command+Shift+Down Arrow, then command+c to copy into clipboard
             - Windows OS: Click on A2, CTRL+Shift+Down Arrow, then CTRL+c to copy into clipboard
-    - Open the "prowler-report-template.xlsx" file and click on the "Prowler CSV" sheet
+    - Open the "prowler3-report-template.xlsx" file and click on the "Prowler CSV" sheet
     - Paste the clipboard data into cell A2 so that it populates Column A
         - Mac OS: Command+v
         - Windows OS: CTRL+v
