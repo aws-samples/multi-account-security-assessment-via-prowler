@@ -350,6 +350,12 @@ Resources:
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+        - Id: LoggingLifeCycle
+          Status: Enabled
+          ExpirationInDays: '365'
+          NoncurrentVersionExpirationInDays: '365'
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerEnforced
