@@ -121,7 +121,7 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
     ```bash
     sudo -i
     screen
-    cd /usr/local/prowler
+    cd /usr/local/bin/prowler/
     ./prowler_scan.sh
     ```
 
