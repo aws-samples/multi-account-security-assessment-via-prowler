@@ -236,7 +236,7 @@ This may not serve every use case and tunable variables have been included at th
     The extension used is .txt, as 'CSV' output is semicolon delimited via Prowler and this makes it easier to work with Excel  
     This file is recommended to be used for reporting as know errors are removed and provide cleaner output  
 - The prowler command within the for loop can also be tuned to meet the needs of the assessment.  
-    >Default Value: pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+    >Default Value: prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 
 ### **Update Components**
 
@@ -335,7 +335,7 @@ How to filter results by removing rows which contain a pattern and outputting th
 
     ```bash
     ACCOUNTS_IN_ORGS=$(aws organizations list-accounts --output text --query 'Accounts[?Status==`ACTIVE`].Id')  
-    for accountId in $ACCOUNTS_IN_ORGS; do pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null; done  
+    for accountId in $ACCOUNTS_IN_ORGS; do prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null; done  
     ```
 
 - Single threaded scanning on specific accounts:
@@ -343,5 +343,5 @@ How to filter results by removing rows which contain a pattern and outputting th
 
     ```bash
     ACCOUNTS_TO_SCAN="111111111111 22222222222 33333333333"  
-    for accountId in $ACCOUNTS_TO_SCAN; do pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null; done
+    for accountId in $ACCOUNTS_TO_SCAN; do prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null; done
     ```
