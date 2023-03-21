@@ -148,30 +148,26 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
 
 4. Prepare the PivotTable Excel Template for environment data  
     Open the "prowler3-report-template.xlsx" excel document and select the "Prowler CSV" sheet  
-    Delete all sample data except for Row 1 which is the header
+    Delete all sample data including the header. The best option appears to be when an individual cell is selected and then a "Select All" shortcut is used.
     >Note: If asked whether to delete the query associated with the data being removed, click no to prevent problems with the PivotTable.
+      - Mac OS: Command+a delete
+      - Windows OS: CTRL+a delete
 
 5. Transfer the output from the Prowler assessment into the "prowler3-report-template.xlsx" Excel PivotTable template
     - Open the "prowler-fullorgresults-accessdeniedfiltered.txt" (or alternatively prowler-fullorgresults.txt) file with excel
-    - Delete the header row which should be the very first row as it is already in the "prowler3-report-template.xlsx" excel document
-    - Select from A1 to the very last row in A and copy this data into the clipboard
-        - Do not click the A column as this won't let you paste into the excel template on cell A2.
-        - Use keyboard shortcuts to quickly select  (All of the data exists in column A as it is not yet separated into columns via the semicolon delimiter)
-            - Mac OS: Click on A2, Command+Shift+Down Arrow, then command+c to copy into clipboard
-            - Windows OS: Click on A2, CTRL+Shift+Down Arrow, then CTRL+c to copy into clipboard
+    - Select column A so that the entire column is highlighted and copy this data into the clipboard
     - Open the "prowler3-report-template.xlsx" file and click on the "Prowler CSV" sheet
-    - Paste the clipboard data into cell A2 so that it populates Column A
+    - Paste the clipboard data into cell A1 so that it populates Column A starting with the header in A1
         - Mac OS: Command+v
         - Windows OS: CTRL+v
     - Instruct Excel to convert the data into columns by delimiting with the semicolon.
-        - The pasted data should be selected.  If not, select all data in column A EXCEPT A1 which is the header
+        - The pasted data should be selected. However, if not, select column A so that the entire column is highlighted
         - Click the Excel "Data" menu item
         - Click "Text to Columns"
         - Select "Delimited"
         - Next
         - Select "Semicolon" as a delimiter and validate the "Data Preview" shows the data being separated into columns
         - click "Finish"
-            >Note: You should NOT receive a warning stating "There's already data here. Do you want to replace it?"  If you proceed, you will overwrite the header.  Make sure to only select the data from A2 down and not the header in A1.  
 
     >Notes:
     >
@@ -184,6 +180,7 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
 
 7. Refresh Findings and graph pivot tables  
     Select the "Findings" sheet at the bottom of the excel doc, click on A17 (Header of the pivot table) to select the PivotTable header, click "PivotTable Analyze" at the top toolbar, then click the dropdown next to Refresh, and click Refresh All. This will incorporate all new CSV output into the tables and tabs.
+    >Note: If the refresh takes longer than 5 minutes, it may be running into an issue processing a large amount of data for the "Customer Review" and "Customer Review Simple" Excel tabs.  Close Excel and start the entire output handling process over, but before refreshing the pivot table, DELETE those two tabs.  This is a known issue and once corrected, this note will be removed.
 
     ![PivotRefresh](docs/images/PivotRefresh.png)
 
