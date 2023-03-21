@@ -33,7 +33,7 @@
 #        Using .txt as 'CSV' output is semicolon delimited
 #       This file is recommended to be used for reporting as know errors are removed and provide cleaner output
 #   10) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
-#       pipenv run prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+#       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 #       See Prowler documentation for all options.
 #########################################
 
@@ -169,7 +169,7 @@ if [ "$REGION_LIST" == "allregions" ]; then
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with all AWS regions using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler
-            pipenv run prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 else
@@ -180,7 +180,7 @@ else
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with regions: $REGION_LIST using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler with -f and scans regions specified in the $REGION_LIST variable
-            pipenv run prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -f $REGION_LIST -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -f $REGION_LIST -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 fi
