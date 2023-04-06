@@ -296,7 +296,7 @@ echo ""
 python3 /usr/local/prowler/generateVisualizations.py
 
 #Zip output results into a single file for download (stdout-* includes stdout and can be reviewed for troubleshooting)
-OUTPUT_SUFFIX=$(date +%m-%d-%Y-%H-%M)
+OUTPUT_SUFFIX=$(date +%F-%H-%M)
 echo "Zipping output results into a single file for download. Output File: prowler_output.zip"
 zip -r prowler_output-$OUTPUT_SUFFIX.zip output/*.csv output/*.txt output/*.json output/*.html output/ResultsVisualizations-*/*.*
 echo "Completed."
