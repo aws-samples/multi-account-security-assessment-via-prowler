@@ -444,8 +444,8 @@ Resources:
             /usr/local/bin/pip3 install pipenv
             pipenv install
 
-            #Install Prowler via pip3
-            /usr/local/bin/pip3 install prowler
+            #Install Dependencies
+            /usr/local/bin/pip3 install prowler matplotlib numpy
 
             #Set script to be executable
             chmod +x /usr/local/prowler/prowler_scan.sh
