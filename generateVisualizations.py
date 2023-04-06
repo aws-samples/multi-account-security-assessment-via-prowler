@@ -40,7 +40,7 @@ servicesPassFail={}
 accountIdResult={}
 
 # Output directory for saved figures
-savePath='/usr/local/prowler/output/ResultsVisualizations-'+str(datetime.now().strftime("%Y-%m-%d--%H-%M-%S"))
+savePath='/usr/local/prowler/output/ResultsVisualizations-'+str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 os.mkdir(savePath)
 
 # Process command line arguments, allowing the user to specify a result file name to process
