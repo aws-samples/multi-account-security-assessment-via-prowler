@@ -9,7 +9,7 @@ Parameters:
     Description: "ARN of IAM Role which is authorized to assume the ProwlerExecRole role."
     Type: String
 
-  ProwlerRoleName:
+  ProwlerExecRoleName:
     Description: "Name of the IAM role that will have these policies attached. Default: ProwlerExecRole"
     Type: String
     Default: "ProwlerExecRole"
@@ -36,7 +36,7 @@ Resources:
       ManagedPolicyArns:  #SecurityAudit and ViewOnly Access are used as per Prowler requirements to grant the appropriate level of read-only access to resources
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/SecurityAudit"
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/job-function/ViewOnlyAccess"
-      RoleName: !Sub ${ProwlerRoleName}
+      RoleName: !Sub ${ProwlerExecRoleName}
       Policies:
         - PolicyName: ProwlerExecRoleAdditionalViewPrivileges
           PolicyDocument:
