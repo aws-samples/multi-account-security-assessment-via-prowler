@@ -114,9 +114,9 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
 
 5. Execute the prowler scan script to begin the assessment
     >Notes:
-        >
-        > > - Screen will be used to allow the prowler script to continue executing if console access is lost.  Wait for the Prowler assessment to complete before continuing with Output handling
-        > > - Output from prowler assessments will be redirected to output/stdout-accountId.txt and errors will be shown on the console. tail -f output/stdout-\<accountid\> in the prowler directory to monitor progress of individual account assessments
+    >
+    > > - Screen will be used to allow the prowler script to continue executing if console access is lost.  Wait for the Prowler assessment to complete before continuing with Output handling
+    > > - Output from prowler assessments will be redirected to output/stdout-accountId.txt and errors will be shown on the console. tail -f output/stdout-\<accountid\> in the prowler directory to monitor progress of individual account assessments
 
     ```bash
     sudo -i
