@@ -197,7 +197,7 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
     - Click "Collapse"
 
 10. Creation of a report  
-    The findings, severity, and Pass Fail sheets provide details of the assessment. Copy the graphics you wish to use into a presentation document and then delete unneeded Excel sheets. Charts and tables are included a subdirectory of the zip file, called ResultsVisualizations-<dateOfScan> in PNG format. These can be used to enhance your reports with visualizations.
+    The findings, severity, and Pass Fail sheets provide details of the assessment. Copy the graphics you wish to use into a presentation document and then delete unneeded Excel sheets. Charts and tables are also included a subdirectory of the zip file, called ResultsVisualizations-<dateOfScan> in PNG format. These can be used to enhance your reports with visualizations.
 
 11. Cleanup the deployment  
     If this Prowler deploy is not going to be utilized for future assessments, clean up the environment by deleting all Stacks and StackSets associated with this deployment.
