@@ -180,7 +180,6 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
 
 7. Refresh Findings and graph pivot tables  
     Select the "Findings" sheet at the bottom of the excel doc, click on A17 (Header of the pivot table) to select the PivotTable header, click "PivotTable Analyze" at the top toolbar, then click the dropdown next to Refresh, and click Refresh All. This will incorporate all new CSV output into the tables and tabs.
-    >Note: If the refresh takes longer than 5 minutes, it may be running into an issue processing a large amount of data for the "Customer Review" and "Customer Review Simple" Excel tabs.  Close Excel and start the entire output handling process over, but before refreshing the pivot table, DELETE those two tabs.  This is a known issue and once corrected, this note will be removed.
 
     ![PivotRefresh](docs/images/PivotRefresh.png)
 
@@ -198,7 +197,7 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
     - Click "Collapse"
 
 10. Creation of a report  
-    The findings, severity, and customer review sheets provide details of the assessment. If the excel is provided to the customer, delete as many tabs as possible to reduce complexity (Prowler CSV tab MUST remain or the pivot tables will fail). Copy the graphics you wish to use into a presentation document and then delete unneeded Excel sheets. Findings and Customer Review sheets will be the primary focus for review of consolidated findings and performing filtering.
+    The findings, severity, and Pass Fail sheets provide details of the assessment. Copy the graphics you wish to use into a presentation document and then delete unneeded Excel sheets. Charts and tables are also included a subdirectory of the zip file, called ResultsVisualizations-<dateOfScan> in PNG format. These can be used to enhance your reports with visualizations.
 
 11. Cleanup the deployment  
     If this Prowler deploy is not going to be utilized for future assessments, clean up the environment by deleting all Stacks and StackSets associated with this deployment.
@@ -252,7 +251,7 @@ In order to pull these updates into an existing deployment, steps are provided b
   - Stash all local changes before git pull so they can be merged back in: git stash
   - Pull the latest repo files: git pull
   - Merge stashed local changes back into the latest script: git stash pop
-    >Note: Warnings may appear related to any locally generated files (e.g. finding reports) which are not in the GitHub repo.  This is safe to ignore as long as the naa-script.sh shows the local stashed changes are merged back in.
+    >Note: Warnings may appear related to any locally generated files (e.g. finding reports) which are not in the GitHub repo.  This is safe to ignore as long as the prowler_scan.sh shows the local stashed changes are merged back in.
 
 ### **Resource Estimates**
 
