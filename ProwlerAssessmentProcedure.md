@@ -252,7 +252,7 @@ In order to pull these updates into an existing deployment, steps are provided b
   - Stash all local changes before git pull so they can be merged back in: git stash
   - Pull the latest repo files: git pull
   - Merge stashed local changes back into the latest script: git stash pop
-    >Note: Warnings may appear related to any locally generated files (e.g. finding reports) which are not in the GitHub repo.  This is safe to ignore as long as the naa-script.sh shows the local stashed changes are merged back in.
+    >Note: Warnings may appear related to any locally generated files (e.g. finding reports) which are not in the GitHub repo.  This is safe to ignore as long as the prowler_scan.sh shows the local stashed changes are merged back in.
 
 ### **Resource Estimates**
 
