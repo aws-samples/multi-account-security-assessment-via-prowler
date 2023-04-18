@@ -27,7 +27,7 @@ Prowler-resources.yaml: A CFT template which is deployed in the account where th
 
 IAM-ProwlerExecRole.yaml: A CFT template to be deployed via StackSet across all member accounts. This will create an IAM Role which can be assumed by prowler during scanning.
 
-prowler3-report-template.xlsx: An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings. Note: The excel document version must match with a supported version of prowler.
+prowler-report-template.xlsx: An excel document for processing of findings. Pivot tables allow for search capabilities, charts, and consolidated findings. Note: The excel document version must match with a supported version of prowler.
 
 ## **Implementation Procedure**
 
@@ -147,16 +147,16 @@ prowler3-report-template.xlsx: An excel document for processing of findings. Piv
     >Note: The stdout-\<accountid\> files included in the zip can be used for prowler execution review or troubleshooting, but will be not be processed for a report.
 
 4. Prepare the PivotTable Excel Template for environment data  
-    Open the "prowler3-report-template.xlsx" excel document and select the "Prowler CSV" sheet  
+    Open the "prowler-report-template.xlsx" excel document and select the "Prowler CSV" sheet  
     Delete all sample data including the header. The best option appears to be when an individual cell is selected and then a "Select All" shortcut is used.
     >Note: If asked whether to delete the query associated with the data being removed, click no to prevent problems with the PivotTable.
       - Mac OS: Command+a delete
       - Windows OS: CTRL+a delete
 
-5. Transfer the output from the Prowler assessment into the "prowler3-report-template.xlsx" Excel PivotTable template
+5. Transfer the output from the Prowler assessment into the "prowler-report-template.xlsx" Excel PivotTable template
     - Open the "prowler-fullorgresults-accessdeniedfiltered.txt" (or alternatively prowler-fullorgresults.txt) file with excel
     - Select column A so that the entire column is highlighted and copy this data into the clipboard
-    - Open the "prowler3-report-template.xlsx" file and click on the "Prowler CSV" sheet
+    - Open the "prowler-report-template.xlsx" file and click on the "Prowler CSV" sheet
     - Paste the clipboard data into cell A1 so that it populates Column A starting with the header in A1
         - Mac OS: Command+v
         - Windows OS: CTRL+v
