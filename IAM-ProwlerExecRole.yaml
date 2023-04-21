@@ -46,8 +46,9 @@ Resources:
                 Action:
                   - account:Get*
                   - appstream:Describe*
-                  - codeartifact:ListRepositories
-                  - codebuild:BatchGetBuilds
+                  - appstream:List*
+                  - codeartifact:List*
+                  - codebuild:BatchGet*
                   - ds:Get*
                   - ds:Describe*
                   - ds:List*
@@ -55,18 +56,21 @@ Resources:
                   - ecr:Describe*
                   - elasticfilesystem:DescribeBackupPolicy
                   - glue:GetConnections
-                  - glue:GetSecurityConfiguration
+                  - glue:GetSecurityConfiguration*
                   - glue:SearchTables
-                  - lambda:GetFunction
+                  - lambda:GetFunction*
                   - macie2:GetMacieSession
                   - s3:GetAccountPublicAccessBlock
                   - s3:GetEncryptionConfiguration
-                  - s3:GetPublicAccessBlock
+                  - s3:GetBucketPublicAccessBlock
                   - shield:DescribeProtection
                   - shield:GetSubscriptionState
                   - ssm:GetDocument
                   - support:Describe*
                   - tag:GetTagKeys
+                  - organizations:DescribeOrganization
+                  - organizations:ListPolicies*
+                  - organizations:DescribePolicy
                 Resource: "*"
               - Effect: Allow
                 Action:
