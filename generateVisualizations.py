@@ -274,7 +274,6 @@ htmlTemplate = f"""<html>
 </head>
 <body>
 <h1>Prowler Report</h1>
-<h2>Prepared by AWS Professional Services</h2>
 <p>{date}</p>
 
 <h3>Failures by Severity</h3>
