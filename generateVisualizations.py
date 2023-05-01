@@ -184,7 +184,7 @@ fig, ax = plt.subplots()
 colors=["green", "orange", "red", "purple"]
 ax.pie(y,colors=colors, autopct=lambda p: '{:.0f}'.format(p *y.sum() / 100), shadow=False)
 plt.legend(bbox_to_anchor=(1, 0.5), loc='best', labels=labels)
-plt.title("Results by Failure Severity")
+plt.title("Results by Failure Severity\n\n")
 plt.autoscale(enable=True, tight=True)
 now = datetime.now()
 currentTime = now.strftime("%H-%M-%S")
@@ -211,7 +211,7 @@ ax.pie(y, labels=pieLabels, colors=colors,
    shadow=False)
 
 plt.legend(loc='best', labels=labels, fontsize="xx-small", bbox_to_anchor=(1, 0.5))
-plt.title("Results by severity")
+plt.title("Results by severity\n\n")
 plt.autoscale(enable=True, tight=True)
 now = datetime.now()
 currentTime = now.strftime("%H-%M-%S")
