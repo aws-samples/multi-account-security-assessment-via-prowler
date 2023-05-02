@@ -277,19 +277,19 @@ htmlTemplate = f"""<html>
 <p>{date}</p>
 
 <h3>Failures by Severity</h3>
-<img src="./{failuresBySeverityCount}"></img>
+<img src="./{failuresBySeverityCount}" width="900"></img>
 <br>
 <h2>Failures by Result</h2>
-<img src="./{resultsByFail}"></img>
+<img src="./{resultsByFail}" width="900"></img>
 <br>
 <h3>Pass/Fail by Severity</h3>
-<img src="./{resultsBySeverity}" width="800" height="500"></img>
+<img src="./{resultsBySeverity}" width="900"></img>
 <br>
 <h3>Failures by Service</h3>
-<img src="./{failuresByService}"></img>
+<img src="./{failuresByService}" width="900"></img>
 <br>
 <h3>Failures by Account</h3>
-<img src="./{failuresByAccount}" width="900" height="1000"></img>
+<img src="./{failuresByAccount}" width="900"></img>
 <br>
 <h2>Failures by Severity</h2>
 Low failures: {lowFailures}<br>
