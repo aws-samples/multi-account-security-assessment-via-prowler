@@ -41,11 +41,11 @@ Parameters:
     Description: Select a private subnet with Internet access. (user data is dependent on Internet for downloading binaries during EC2 provisioning)
   InstanceImageId:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
-    Description: Amazon Linux 2 Image
-    Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+    Description: Amazon Linux 2023 Image
+    Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
   InstanceType:
     Type: String
-    Description: "Specify the instance size to use. Parallel_Account Sizing: AWS: 10=r6i.large, 12=r6i.xlarge, 14-18=r6i.2xlarge / AWS-CN: Use r5 equivalent"
+    Description: "Specify the instance size to use. Parallel_Account Sizing: AWS: 8=r6i.large, 12=r6i.xlarge, 16=r6i.2xlarge / AWS-CN: Use r5 equivalent"
     Default: r6i.xlarge
     AllowedValues:
       - r6i.large
@@ -74,9 +74,12 @@ Parameters:
     Description: "Specify the number of accounts to assess in parallel. Appropriate Instance Type and Size must be selected (can be adjusted within prowler_scan.sh)"
     Default: 12
     AllowedValues:
+      - 8
       - 10
       - 12
       - 14
+      - 16
+      - 18
   KeyPairName:
     Type: "String"
     Description: "Optional: Specify the name of a pre-existing EC2 KeyPair if you require ssh to the Prowler instance.  Recommendation is to leave blank and use SSM Connect"
@@ -410,10 +413,7 @@ Resources:
             #!/bin/bash
 
             #Upgrade the OS
-            sudo yum upgrade -y
-
-            #Remove OS distribution based python3
-            sudo yum erase python3 -y
+            sudo dnf upgrade -y
 
             #Create Linux swap of 16GB (128X64=8GB(BS=128 is optimal for creation))
             sudo dd if=/dev/zero of=/swapfile bs=128M count=64
@@ -426,17 +426,7 @@ Resources:
             echo 'export PATH="/usr/local/bin:$PATH"' >> /root/.bashrc
             
             #Install script and Prowler dependencies
-            sudo yum install -y jq git pip openssl-devel bzip2-devel libffi-devel gcc git
-
-            cd /tmp
-            wget https://www.python.org/ftp/python/3.9.16/Python-3.9.16.tgz
-            tar zxf Python-3.9.16.tgz
-            cd Python-3.9.16
-            ./configure --enable-optimizations
-            sudo make altinstall
-
-            #Link python3.9 to /bin
-            ln -s /usr/local/bin/python3.9 /bin/python3
+            sudo dnf install -y jq git pip openssl-devel bzip2-devel libffi-devel gcc git zlib-devel
 
             #Clone Multi-Account-Security-Assessment Repo
             cd /usr/local
@@ -444,12 +434,15 @@ Resources:
 
             #Upgrade pip and install pipenv
             cd /usr/local/prowler
-            python3 -m pip install --upgrade pip
-            /usr/local/bin/pip3 install pipenv
-            pipenv install
 
-            #Install Dependencies
-            /usr/local/bin/pip3 install prowler matplotlib numpy
+            #Install Prowler via pip3
+            pip install prowler
+
+            #Install Python Report Dependencies
+            pip install matplotlib numpy
+
+            #Reinstall OS based Colorama
+            sudo dnf reinstall python3-colorama -y
 
             #Set script to be executable
             chmod +x /usr/local/prowler/prowler_scan.sh
