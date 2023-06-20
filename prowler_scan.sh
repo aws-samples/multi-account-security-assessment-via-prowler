@@ -5,14 +5,14 @@
 #   Used to drive the assessment of AWS accounts via Prowler, post-processing the output reports
 #   and optimizing the effort involved via automation.
 #
-# Script version: 2.95
+# Script version: 2.96
 #
 # Tunable parameters to review:
 #   1) PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously.
 #       The instance size must be adjusted appropriately.
 #       Be aware of AWS Account level EC2 API Throttling limits and to execute this script in an account with minimal workloads.
 #       r6i.xlarge can sustain 12 parallel assessments based on memory testing.
-#       Utilize appropriately sized EC2 instance (10=r6i.large,12=r6i.xlarge, 14-18=r6i.2xlarge)
+#       Utilize appropriately sized EC2 instance (8=r6i.large,12=r6i.xlarge, 16=r6i.2xlarge)
 #   2) AWSACCOUNT_LIST: Specify the accounts to be assessed using one of the supported methods:
 #       Use the keyword allaccounts to generate a list of all accounts in the AWS Org
 #       Use the keyword inputfile to read in AWS Account IDs from a file (If using this mode, must also set AWSACCOUNT_LIST_FILE)
