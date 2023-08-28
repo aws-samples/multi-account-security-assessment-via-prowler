@@ -132,30 +132,37 @@ Resources:
             Resource: !Sub "arn:${AWS::Partition}:iam::*:role/${IAMProwlerExecRole}"
           - Effect: Allow
             Action:
-              - account:Get*
-              - appstream:Describe*
-              - appstream:List*
-              - codeartifact:List*
-              - codebuild:BatchGet*
-              - ds:Get*
-              - ds:Describe*
-              - ds:List*
-              - ec2:GetEbsEncryptionByDefault
-              - ecr:Describe*
-              - elasticfilesystem:DescribeBackupPolicy
-              - glue:GetConnections
-              - glue:GetSecurityConfiguration*
-              - glue:SearchTables
-              - lambda:GetFunction*
-              - macie2:GetMacieSession
-              - s3:GetAccountPublicAccessBlock
-              - s3:GetEncryptionConfiguration
-              - s3:GetBucketPublicAccessBlock
-              - shield:DescribeProtection
-              - shield:GetSubscriptionState
-              - ssm:GetDocument
-              - support:Describe*
-              - tag:GetTagKeys
+              - account:Get*,
+              - appstream:Describe*,
+              - appstream:List*,
+              - backup:List*,
+              - cloudtrail:GetInsightSelectors,
+              - codeartifact:List*,
+              - codebuild:BatchGet*,
+              - drs:Describe*,
+              - ds:Get*,
+              - ds:Describe*,
+              - ds:List*,
+              - ec2:GetEbsEncryptionByDefault,
+              - ecr:Describe*,
+              - ecr:GetRegistryScanningConfiguration,
+              - elasticfilesystem:DescribeBackupPolicy,
+              - glue:GetConnections,
+              - glue:GetSecurityConfiguration*,
+              - glue:SearchTables,
+              - lambda:GetFunction*,
+              - logs:FilterLogEvents,
+              - macie2:GetMacieSession,
+              - s3:GetAccountPublicAccessBlock,
+              - shield:DescribeProtection,
+              - shield:GetSubscriptionState,
+              - securityhub:BatchImportFindings,
+              - securityhub:GetFindings,
+              - ssm:GetDocument,
+              - ssm-incidents:List*,
+              - support:Describe*,
+              - tag:GetTagKeys,
+              - wellarchitected:List*
               - organizations:DescribeOrganization
               - organizations:ListPolicies*
               - organizations:DescribePolicy
@@ -165,6 +172,7 @@ Resources:
               - apigateway:GET
             Resource:
               - !Sub "arn:${AWS::Partition}:apigateway:*::/restapis/*"
+              - !Sub "arn:${AWS::Partition}:apigateway:*::/apis/*"
           - Effect: Allow
             Action:
               - "s3:PutObject*"
