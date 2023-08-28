@@ -78,6 +78,7 @@ Resources:
                   - organizations:DescribeOrganization
                   - organizations:ListPolicies*
                   - organizations:DescribePolicy
+                  - organizations:ListDelegatedAdministrators
                 Resource: "*"
               - Effect: Allow
                 Action:
