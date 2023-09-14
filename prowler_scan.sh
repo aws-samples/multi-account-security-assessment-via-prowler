@@ -48,7 +48,7 @@ AWSACCOUNT_LIST="allaccounts"
 #AWSACCOUNT_LIST="123456789012 210987654321"
 
 #If using AWSACCOUNT_LIST="inputfile", specify the path to the file:
-#AWSACCOUNT_LIST_FILE="file_with_account_ids
+#AWSACCOUNT_LIST_FILE="file_with_account_ids"
 
 #Specify the regions to have assessed (space separated) or use the keyword allregions to include all regions:
 REGION_LIST="allregions"
