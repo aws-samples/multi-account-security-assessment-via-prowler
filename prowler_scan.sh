@@ -5,7 +5,7 @@
 #   Used to drive the assessment of AWS accounts via Prowler, post-processing the output reports
 #   and optimizing the effort involved via automation.
 #
-# Script version: 2.96
+# Script version: 2.98
 #
 # Tunable parameters to review:
 #   1) PARALLELISM: Can be tuned to specify how many accounts to assess simultaneously.
@@ -106,7 +106,7 @@ management_account_session() {
 
 #Monitor the number of background processes and return to task execution for loop when bg jobs are less than PARALLELISM limit
 process_monitor() {
-    while [ "$(jobs | wc -l)" -ge $PARALLELISM ]
+    while [ "$(jobs | grep Running | wc -l)" -ge $PARALLELISM ]
     do
         echo "Sleeping 20 seconds while waiting for active assessment queue to clear..."
         sleep 20
@@ -163,7 +163,7 @@ echo ""
 # Run Prowler against selected accounts and regions
 if [ "$REGION_LIST" == "allregions" ]; then
     for ACCOUNTID in $ACCOUNTS_TO_PROCESS; do
-        test "$(jobs | wc -l)" -ge $PARALLELISM && process_monitor || true
+        test "$(jobs | grep Running | wc -l)" -ge $PARALLELISM && process_monitor || true
         {
             # Unset AWS Profile Variables
             unset_aws_environment
@@ -174,7 +174,7 @@ if [ "$REGION_LIST" == "allregions" ]; then
     done
 else
     for ACCOUNTID in $ACCOUNTS_TO_PROCESS; do
-        test "$(jobs | wc -l)" -ge $PARALLELISM && process_monitor || true
+        test "$(jobs | grep Running | wc -l)" -ge $PARALLELISM && process_monitor || true
         {
             # Unset AWS Profile Variables
             unset_aws_environment
