@@ -74,6 +74,10 @@ Parameters:
     Description: "Specify the number of accounts to assess in parallel. Appropriate Instance Type and Size must be selected (can be adjusted within prowler_scan.sh)"
     Default: 12
     AllowedValues:
+      - 1
+      - 2
+      - 4
+      - 6
       - 8
       - 10
       - 12
