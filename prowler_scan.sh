@@ -35,6 +35,9 @@
 #   10) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
 #       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 #       See Prowler documentation for all options.
+#   11) FINDING_OUTPUT: To reduce the amount of output and focus on FAIL findings vs both FAIL and PASS, -q is specified.
+#       If both FAIL and PASS findings output is desired, comment out the entire variable or set FINDING_OUTPUT=""
+#
 #########################################
 
 #Variables which can be modified: (In most cases, scanning all accounts and all regions is preferred for a complete assessment)
@@ -68,6 +71,9 @@ CONSOLIDATED_REPORT=output/prowler-fullorgresults.txt
 
 #Consolidated output report with error filtering (Using .txt as 'CSV' output is semicolon delimited) (Recommended to be used for reporting)
 CONSOLIDATED_REPORT_FILTERED=output/prowler-fullorgresults-accessdeniedfiltered.txt
+
+#Comment out this variable to have Prowler output both PASS *and* FAIL findings.  With -q, *ONLY* FAIL will be output
+FINDING_OUTPUT="-q"
 
 #########################################
 
@@ -169,7 +175,7 @@ if [ "$REGION_LIST" == "allregions" ]; then
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with all AWS regions using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler
-            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 else
@@ -180,7 +186,7 @@ else
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with regions: $REGION_LIST using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler with -f and scans regions specified in the $REGION_LIST variable
-            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -f $REGION_LIST -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -f $REGION_LIST ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 fi
