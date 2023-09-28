@@ -480,7 +480,7 @@ Resources:
             sed -i 's/PARALLELISM="12"/PARALLELISM="${Parallelism}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/IAM_CROSS_ACCOUNT_ROLE="ProwlerExecRole"/IAM_CROSS_ACCOUNT_ROLE="${IAMProwlerExecRole}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/S3_BUCKET="SetBucketName"/S3_BUCKET="${S3Bucket}"/' /usr/local/prowler/prowler_scan.sh
-            sed -i 's/FINDING_OUTPUT="-q"/FINDING_OUTPUT=${FindingOutputValue}/' /usr/local/prowler/prowler_scan.sh
+            sed -i 's/FINDING_OUTPUT=-q/FINDING_OUTPUT=${FindingOutputValue}/' /usr/local/prowler/prowler_scan.sh
 
           - FindingOutputValue : !FindInMap [FindingOutputMap, Ref: FindingOutput, value]
 
