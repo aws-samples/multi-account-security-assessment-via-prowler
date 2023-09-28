@@ -87,7 +87,7 @@ Parameters:
       - 18
   FindingOutput:
     Type: String
-    Description: "Specify FailOnly to instruct Prowler to output FAIL findings only.  This will significantly reduce the output and focus on checks which need to be resolved"
+    Description: "If you want to exclude pass results, select FailOnly. This significantly reduces the output size and focuses on the checks that might need to be resolved. If you want to include pass results, select FailAndPass."
     Default: "FailOnly"
     AllowedValues:
       - "FailOnly"
