@@ -435,8 +435,8 @@ Resources:
       SecurityGroupIds:
         - !GetAtt "ProwlerSG.GroupId"
       UserData:
-        Fn::Base64:
-          Fn::Sub: |
+        Fn::Base64: !Sub
+          - |+
             #!/bin/bash
 
             #Upgrade the OS
@@ -457,7 +457,7 @@ Resources:
 
             #Clone Multi-Account-Security-Assessment Repo
             cd /usr/local
-            git clone https://github.com/aws-samples/multi-account-security-assessment-via-prowler prowler
+            git clone -b Set-default-output-to-FAIL-only https://github.com/aws-samples/multi-account-security-assessment-via-prowler prowler
 
             #Upgrade pip and install pipenv
             cd /usr/local/prowler
@@ -480,7 +480,9 @@ Resources:
             sed -i 's/PARALLELISM="12"/PARALLELISM="${Parallelism}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/IAM_CROSS_ACCOUNT_ROLE="ProwlerExecRole"/IAM_CROSS_ACCOUNT_ROLE="${IAMProwlerExecRole}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/S3_BUCKET="SetBucketName"/S3_BUCKET="${S3Bucket}"/' /usr/local/prowler/prowler_scan.sh
-            sed -i 's/FINDING_OUTPUT="-q"/FINDING_OUTPUT="!FindInMap [FindingOutputMap, !Ref $FindingOutput, value]"/' /usr/local/prowler/prowler_scan.sh
+            sed -i 's/FINDING_OUTPUT="-q"/FINDING_OUTPUT=${FindingOutputValue}/' /usr/local/prowler/prowler_scan.sh
+            
+          - FindingOutputValue : !FindInMap [FindingOutputMap, Ref: FindingOutput, value]
 
       Tags:
         - Key: "Name"
