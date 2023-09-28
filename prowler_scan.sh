@@ -155,6 +155,14 @@ else
 fi
 
 echo ""
+echo "Prowler Finding Output Mode:"
+if [ "$FINDING_OUTPUT" == "-q" ]; then
+    echo "Failed Findings Only"
+else
+    echo "Failed and Passed Findings"
+fi
+
+echo ""
 echo "Output from prowler assessments will be redirected to output/stdout-<accountId>.txt and errors will be shown on the console"
 echo "tail -f these files to monitor progress of individual account assessments"
 echo ""
