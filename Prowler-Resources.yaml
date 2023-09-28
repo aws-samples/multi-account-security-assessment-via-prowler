@@ -31,6 +31,7 @@ Metadata:
           default: "Prowler Script"
         Parameters:
           - Parallelism
+          - FindingOutput
 
 Parameters:
   VpcId:
@@ -84,6 +85,13 @@ Parameters:
       - 14
       - 16
       - 18
+  FindingOutput:
+    Type: String
+    Description: "Specify FailOnly to instruct Prowler to output FAIL findings only.  This will significantly reduce the output and focus on checks which need to be resolved"
+    Default: "FailOnly"
+    AllowedValues:
+      - "FailOnly"
+      - "FailAndPass"
   KeyPairName:
     Type: "String"
     Description: "Optional: Specify the name of a pre-existing EC2 KeyPair if you require ssh to the Prowler instance.  Recommendation is to leave blank and use SSM Connect"
@@ -100,6 +108,12 @@ Mappings:
       ec2service: ec2.amazonaws.com
     aws-cn:
       ec2service: ec2.amazonaws.com.cn
+
+  FindingOutputMap: 
+    FailOnly:
+      value: "-q"
+    FailAndPass:
+      value: ""
 
 Conditions:
   KeyProvided:
@@ -466,6 +480,7 @@ Resources:
             sed -i 's/PARALLELISM="12"/PARALLELISM="${Parallelism}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/IAM_CROSS_ACCOUNT_ROLE="ProwlerExecRole"/IAM_CROSS_ACCOUNT_ROLE="${IAMProwlerExecRole}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/S3_BUCKET="SetBucketName"/S3_BUCKET="${S3Bucket}"/' /usr/local/prowler/prowler_scan.sh
+            sed -i 's/FINDING_OUTPUT="-q"/FINDING_OUTPUT="!FindInMap [FindingOutputMap, !Ref $FindingOutput, value]"/' /usr/local/prowler/prowler_scan.sh
 
       Tags:
         - Key: "Name"
