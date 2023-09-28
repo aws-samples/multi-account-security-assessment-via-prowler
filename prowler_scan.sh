@@ -72,7 +72,7 @@ CONSOLIDATED_REPORT=output/prowler-fullorgresults.txt
 #Consolidated output report with error filtering (Using .txt as 'CSV' output is semicolon delimited) (Recommended to be used for reporting)
 CONSOLIDATED_REPORT_FILTERED=output/prowler-fullorgresults-accessdeniedfiltered.txt
 
-#Comment out this variable to have Prowler output both PASS *and* FAIL findings.  With -q, *ONLY* FAIL will be output
+#Comment out this variable (or set FINDING_OUTPUT="") to have Prowler output both PASS *and* FAIL findings.  With -q, *ONLY* FAIL will be output
 FINDING_OUTPUT="-q"
 
 #########################################
