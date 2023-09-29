@@ -111,7 +111,7 @@ Mappings:
 
   FindingOutputMap: 
     FailOnly:
-      value: "-q"
+      value: -q
     FailAndPass:
       value: ""
 
