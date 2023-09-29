@@ -36,7 +36,7 @@
 #       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 #       See Prowler documentation for all options.
 #   11) FINDING_OUTPUT: To reduce the amount of output and focus on FAIL findings vs both FAIL and PASS, -q is specified.
-#       If both FAIL and PASS findings output is desired, comment out the entire variable or set FINDING_OUTPUT=""
+#       If both FAIL and PASS findings output is desired, comment out the entire variable or set FINDING_OUTPUT=
 #
 #########################################
 
