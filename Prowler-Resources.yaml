@@ -468,8 +468,8 @@ Resources:
             #Install Python Report Dependencies
             pip install matplotlib numpy
 
-            #Reinstall OS based Colorama
-            sudo dnf reinstall python3-colorama -y
+            #Reinstall OS based Python modules altered during Prowler and dependency install
+            sudo dnf reinstall python3-colorama python3-dateutil -y
 
             #Set script to be executable
             chmod +x /usr/local/prowler/prowler_scan.sh
