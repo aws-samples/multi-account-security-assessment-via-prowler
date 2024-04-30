@@ -465,9 +465,6 @@ Resources:
             #Install Prowler via pip3
             pip install prowler==3.15.0
 
-            #Install Python Report Dependencies
-            pip install matplotlib numpy
-
             #Reinstall OS based Python modules altered during Prowler and dependency install
             sudo dnf reinstall python3-colorama python3-dateutil -y
 
