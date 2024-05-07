@@ -332,6 +332,11 @@ Resources:
           FromPort: "53"
           ToPort: "53"
           CidrIp: 0.0.0.0/0
+        - Description: "NTP Time Sync"
+          IpProtocol: "udp"
+          FromPort: "123"
+          ToPort: "123"
+          CidrIp: 0.0.0.0/0
       SecurityGroupIngress:
         - Description: "Inbound SSH"
           IpProtocol: "tcp"
