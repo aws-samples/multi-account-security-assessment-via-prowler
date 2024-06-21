@@ -33,7 +33,7 @@
 #        Using .txt as 'CSV' output is semicolon delimited
 #       This file is recommended to be used for reporting as know errors are removed and provide cleaner output
 #   10) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
-#       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html-T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+#       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf html-T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 #       See Prowler documentation for all options.
 #   11) FINDING_OUTPUT: To reduce the amount of output and focus on FAIL findings vs both FAIL and PASS, --status FAIL is specified.
 #       If both FAIL and PASS findings output is desired, comment out the entire variable or set FINDING_OUTPUT=
