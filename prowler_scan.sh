@@ -33,7 +33,7 @@
 #        Using .txt as 'CSV' output is semicolon delimited
 #       This file is recommended to be used for reporting as know errors are removed and provide cleaner output
 #   10) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
-#       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+#       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html-T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 #       See Prowler documentation for all options.
 #   11) FINDING_OUTPUT: To reduce the amount of output and focus on FAIL findings vs both FAIL and PASS, --status FAIL is specified.
 #       If both FAIL and PASS findings output is desired, comment out the entire variable or set FINDING_OUTPUT=
@@ -183,7 +183,7 @@ if [ "$REGION_LIST" == "allregions" ]; then
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with all AWS regions using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler
-            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf html ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 else
@@ -194,7 +194,7 @@ else
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with regions: $REGION_LIST using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler with -f and scans regions specified in the $REGION_LIST variable
-            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf -f $REGION_LIST ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf html -f $REGION_LIST ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 fi
@@ -309,7 +309,7 @@ echo ""
 #Zip output results into a single file for download (stdout-* includes stdout and can be reviewed for troubleshooting)
 OUTPUT_SUFFIX=$(date +%F-%H-%M)
 echo "Zipping output results into a single file for download. Output File: prowler_output.zip"
-zip -r prowler_output-$OUTPUT_SUFFIX.zip output/*.csv output/*.txt output/*.json
+zip -r prowler_output-$OUTPUT_SUFFIX.zip output/*.csv output/*.txt output/*.json output/*.html output/compliance/*
 echo "Completed."
 echo ""
 
