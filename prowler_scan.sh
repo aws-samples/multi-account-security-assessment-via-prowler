@@ -33,9 +33,9 @@
 #        Using .txt as 'CSV' output is semicolon delimited
 #       This file is recommended to be used for reporting as know errors are removed and provide cleaner output
 #   10) The prowler command within the for loop can also be tuned to meet the needs of the assessment.
-#       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+#       prowler -R arn:aws-partition:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf html -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
 #       See Prowler documentation for all options.
-#   11) FINDING_OUTPUT: To reduce the amount of output and focus on FAIL findings vs both FAIL and PASS, -q is specified.
+#   11) FINDING_OUTPUT: To reduce the amount of output and focus on FAIL findings vs both FAIL and PASS, --status FAIL is specified.
 #       If both FAIL and PASS findings output is desired, comment out the entire variable or set FINDING_OUTPUT=
 #
 #########################################
@@ -72,8 +72,8 @@ CONSOLIDATED_REPORT=output/prowler-fullorgresults.txt
 #Consolidated output report with error filtering (Using .txt as 'CSV' output is semicolon delimited) (Recommended to be used for reporting)
 CONSOLIDATED_REPORT_FILTERED=output/prowler-fullorgresults-accessdeniedfiltered.txt
 
-#Comment out this variable (or set FINDING_OUTPUT=) to have Prowler output both PASS *and* FAIL findings.  With -q, *ONLY* FAIL will be output
-FINDING_OUTPUT=-q
+#Comment out this variable (or set FINDING_OUTPUT=) to have Prowler output both PASS *and* FAIL findings.  With --status FAIL, *ONLY* FAIL will be output
+FINDING_OUTPUT='--status FAIL'
 
 #########################################
 
@@ -156,7 +156,7 @@ fi
 
 echo ""
 echo "Prowler Finding Output Mode:"
-if [ "$FINDING_OUTPUT" == "-q" ]; then
+if [ "$FINDING_OUTPUT" == "--status FAIL" ]; then
     echo "Failed Findings Only"
 else
     echo "Failed and Passed Findings"
@@ -183,7 +183,7 @@ if [ "$REGION_LIST" == "allregions" ]; then
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with all AWS regions using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler
-            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf html ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 else
@@ -194,7 +194,7 @@ else
             unset_aws_environment
             echo -e "Assessing AWS Account: $ACCOUNTID with regions: $REGION_LIST using Role: $IAM_CROSS_ACCOUNT_ROLE on $(date)"
             # Run Prowler with -f and scans regions specified in the $REGION_LIST variable
-            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json html -f $REGION_LIST ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
+            /usr/local/bin/prowler -R arn:$AWSPARTITION:iam::$ACCOUNTID:role/$IAM_CROSS_ACCOUNT_ROLE -M csv json-ocsf html -f $REGION_LIST ${FINDING_OUTPUT:-} -T 43200 --verbose | tee output/stdout-$ACCOUNTID.txt 1>/dev/null
         } &
     done
 fi
@@ -309,7 +309,7 @@ echo ""
 #Zip output results into a single file for download (stdout-* includes stdout and can be reviewed for troubleshooting)
 OUTPUT_SUFFIX=$(date +%F-%H-%M)
 echo "Zipping output results into a single file for download. Output File: prowler_output.zip"
-zip -r prowler_output-$OUTPUT_SUFFIX.zip output/*.csv output/*.txt output/*.json output/*.html
+zip -r prowler_output-$OUTPUT_SUFFIX.zip output/*.csv output/*.txt output/*.json output/*.html output/compliance/*
 echo "Completed."
 echo ""
 
