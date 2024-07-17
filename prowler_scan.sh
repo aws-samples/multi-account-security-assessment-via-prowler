@@ -48,6 +48,7 @@ PARALLELISM="12"
 #Specify accounts to be assessed using one of the supported methods:
 AWSACCOUNT_LIST="allaccounts"
 #AWSACCOUNT_LIST="inputfile"
+#AWSACCOUNT_LIST="thisaccount"
 #AWSACCOUNT_LIST="123456789012 210987654321"
 
 #If using AWSACCOUNT_LIST="inputfile", specify the path to the file:
@@ -132,6 +133,8 @@ elif [ "$AWSACCOUNT_LIST" = "inputfile" ]; then
         echo "External file $AWSACCOUNT_LIST_FILE not located. Please validate the file/path and update the AWSACCOUNT_LIST_FILE variable."
         exit 0
     fi
+elif [ "$AWSACCOUNT_LIST" = "thisaccount" ]; then
+    ACCOUNTS_TO_PROCESS=$(aws sts get-caller-identity  --query Account --output text)
 else
     ACCOUNTS_TO_PROCESS=$AWSACCOUNT_LIST
 fi
