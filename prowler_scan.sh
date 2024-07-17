@@ -15,6 +15,7 @@
 #       Utilize appropriately sized EC2 instance (8=r6i.large,12=r6i.xlarge, 16=r6i.2xlarge)
 #   2) AWSACCOUNT_LIST: Specify the accounts to be assessed using one of the supported methods:
 #       Use the keyword allaccounts to generate a list of all accounts in the AWS Org
+#       Use the keyword thisaccount to specify only the account where this script is deployed
 #       Use the keyword inputfile to read in AWS Account IDs from a file (If using this mode, must also set AWSACCOUNT_LIST_FILE)
 #       Use a space separated list of AWS Account IDs
 #   3) AWSACCOUNT_LIST_FILE: If using AWSACCOUNT_LIST="inputfile", specify the path to the file
