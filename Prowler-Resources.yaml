@@ -460,6 +460,15 @@ Resources:
             #Install script and Prowler dependencies
             sudo dnf install -y jq git pip openssl-devel bzip2-devel libffi-devel gcc git zlib-devel
 
+            #Replace the OS base awscli with the latest version
+            sudo yum remove awscli -y
+
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+            sudo ln -s /usr/local/bin/aws /usr/bin/aws
+
             #Clone Multi-Account-Security-Assessment Repo
             cd /usr/local
             git clone https://github.com/aws-samples/multi-account-security-assessment-via-prowler prowler
