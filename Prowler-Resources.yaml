@@ -111,7 +111,7 @@ Mappings:
 
   FindingOutputMap: 
     FailOnly:
-      value: --status FAIL
+      value: "'--status FAIL'"
     FailAndPass:
       value: ""
 
