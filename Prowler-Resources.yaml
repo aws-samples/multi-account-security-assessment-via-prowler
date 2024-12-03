@@ -477,7 +477,7 @@ Resources:
             cd /usr/local/prowler
 
             #Install Prowler via pip3
-            pip install prowler
+            pip install prowler==4.*
 
             #Reinstall OS based Python modules altered during Prowler and dependency install
             sudo dnf reinstall python3-colorama python3-dateutil -y
@@ -491,7 +491,7 @@ Resources:
             sed -i 's/PARALLELISM="12"/PARALLELISM="${Parallelism}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/IAM_CROSS_ACCOUNT_ROLE="ProwlerExecRole"/IAM_CROSS_ACCOUNT_ROLE="${IAMProwlerExecRole}"/' /usr/local/prowler/prowler_scan.sh
             sed -i 's/S3_BUCKET="SetBucketName"/S3_BUCKET="${S3Bucket}"/' /usr/local/prowler/prowler_scan.sh
-            sed -i 's/FINDING_OUTPUT='--status FAIL'/FINDING_OUTPUT=${FindingOutputValue}/' /usr/local/prowler/prowler_scan.sh
+            sed -i "s/FINDING_OUTPUT='--status FAIL'/FINDING_OUTPUT=${FindingOutputValue}/" /usr/local/prowler/prowler_scan.sh
 
           - FindingOutputValue : !FindInMap [FindingOutputMap, Ref: FindingOutput, value]
 
