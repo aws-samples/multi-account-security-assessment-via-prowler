@@ -46,9 +46,12 @@ Parameters:
     Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
   InstanceType:
     Type: String
-    Description: "Specify the instance size to use. Parallel_Account Sizing: AWS: 8=r6i.large, 12=r6i.xlarge, 16=r6i.2xlarge / AWS-CN: Use r5 equivalent"
-    Default: r6i.xlarge
+    Description: "Specify the instance size to use. Parallel_Account Sizing: AWS: 8=r7i.large, 12=r7i.xlarge, 16=r7i.2xlarge (Use older gen if unavailable in deployment region)"
+    Default: r7i.xlarge
     AllowedValues:
+      - r7i.large
+      - r7i.xlarge
+      - r7i.2xlarge
       - r6i.large
       - r6i.xlarge
       - r6i.2xlarge
