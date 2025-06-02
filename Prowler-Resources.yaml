@@ -157,14 +157,22 @@ Resources:
               - appstream:Describe*
               - appstream:List*
               - backup:List*
+              - bedrock:List*
+              - bedrock:Get*
               - cloudtrail:GetInsightSelectors
               - codeartifact:List*
               - codebuild:BatchGet*
+              - codebuild:ListReportGroups
+              - cognito-idp:GetUserPoolMfaConfig
+              - dlm:Get*
               - drs:Describe*
               - ds:Get*
               - ds:Describe*
               - ds:List*
+              - dynamodb:GetResourcePolicy
               - ec2:GetEbsEncryptionByDefault
+              - ec2:GetSnapshotBlockPublicAccessState
+              - ec2:GetInstanceMetadataDefaults
               - ecr:Describe*
               - ecr:GetRegistryScanningConfiguration
               - elasticfilesystem:DescribeBackupPolicy
@@ -174,6 +182,7 @@ Resources:
               - lambda:GetFunction*
               - logs:FilterLogEvents
               - macie2:GetMacieSession
+              - macie2:GetAutomatedDiscoveryConfiguration
               - s3:GetAccountPublicAccessBlock
               - shield:DescribeProtection
               - shield:GetSubscriptionState
@@ -181,6 +190,7 @@ Resources:
               - securityhub:GetFindings
               - ssm:GetDocument
               - ssm-incidents:List*
+              - states:ListTagsForResource
               - support:Describe*
               - tag:GetTagKeys
               - wellarchitected:List*
