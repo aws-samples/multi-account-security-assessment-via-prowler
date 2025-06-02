@@ -477,7 +477,7 @@ Resources:
             cd /usr/local/prowler
 
             #Install Prowler via pip3
-            pip install prowler==4.*
+            pip install prowler==5.*
 
             #Reinstall OS based Python modules altered during Prowler and dependency install
             sudo dnf reinstall python3-colorama python3-dateutil -y
